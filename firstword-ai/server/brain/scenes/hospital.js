@@ -9,13 +9,13 @@ const DOC = { key: 'doctor', name: 'Dr. Mitu', bnName: 'ডাক্তার �
 
 async function docSay(r, text, lang, utterance = '', context = {}, clientKey = null) {
   let line = text;
-  if (utterance && qwen.isRoleEnabled('hospital_doctor', lang, clientKey)) {
+  if (qwen.isRoleEnabled('hospital_doctor', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'hospital_doctor',
       lang,
-      utterance,
+      utterance: utterance || text,
       clientKey,
-      context: { doctor: 'Dr. Mitu', ...context },
+      context: { doctor: 'Dr. Mitu', situation: text, ...context },
     });
     if (aiLine) line = aiLine;
   }

@@ -1,6 +1,7 @@
 // FirstWord AI server — Express + JSON store + rule-based pet brain. No paid APIs.
 import express from 'express';
 import path from 'node:path';
+import https from 'node:https';
 import { fileURLToPath } from 'node:url';
 import * as db from './db.js';
 import * as brain from './brain/index.js';
@@ -15,16 +16,92 @@ const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '200kb' }));
 
+// Memory cache for natural TTS audio stream
+const ttsAudioCache = new Map();
+
 // CORS & Vercel serverless prefix normalization
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-parent-pin');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-parent-pin, x-gemini-key, x-role-keys');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
-  if (!req.url.startsWith('/api') && (req.url.startsWith('/children') || req.url.startsWith('/sessions') || req.url.startsWith('/health') || req.url.startsWith('/ml'))) {
+  if (!req.url.startsWith('/api') && (req.url.startsWith('/children') || req.url.startsWith('/sessions') || req.url.startsWith('/health') || req.url.startsWith('/ml') || req.url.startsWith('/tts'))) {
     req.url = '/api' + req.url;
   }
   next();
+});
+
+// Natural Audio Stream (Google TTS proxy with zero-delay memory cache)
+// Provides authentic, natural Bangla and English speech on any browser/device without requiring offline voice packs.
+app.get('/api/tts', (req, res) => {
+  const q = String(req.query.q || req.query.text || '').trim();
+  const tl = String(req.query.tl || req.query.lang || 'bn').trim();
+
+  if (!q) {
+    return res.status(400).send('Missing text parameter');
+  }
+
+  // Clean prompt text: strip markdown, stage directions, and parenthesized emotes
+  const cleanText = q.replace(/\(.*?\)/g, '').replace(/\*.*?\*/g, '').trim();
+  if (!cleanText) {
+    return res.status(400).send('Empty text');
+  }
+
+  const cacheKey = `${tl}:${cleanText}`;
+  if (ttsAudioCache.has(cacheKey)) {
+    const cached = ttsAudioCache.get(cacheKey);
+    res.writeHead(200, {
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': cached.length,
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=604800',
+    });
+    return res.end(cached);
+  }
+
+  const targetUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=${encodeURIComponent(tl)}&client=tw-ob`;
+
+  const proxyReq = https.get(
+    targetUrl,
+    {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        Referer: 'https://translate.google.com/',
+      },
+    },
+    (proxyRes) => {
+      if (proxyRes.statusCode !== 200) {
+        return res.status(proxyRes.statusCode || 500).send('TTS upstream error');
+      }
+      res.writeHead(200, {
+        'Content-Type': 'audio/mpeg',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=604800',
+      });
+      const chunks = [];
+      proxyRes.on('data', (c) => {
+        chunks.push(c);
+        res.write(c);
+      });
+      proxyRes.on('end', () => {
+        res.end();
+        if (chunks.length > 0) {
+          const buf = Buffer.concat(chunks);
+          if (ttsAudioCache.size > 300) {
+            const firstKey = ttsAudioCache.keys().next().value;
+            ttsAudioCache.delete(firstKey);
+          }
+          ttsAudioCache.set(cacheKey, buf);
+        }
+      });
+    }
+  );
+
+  proxyReq.on('error', (err) => {
+    if (!res.headersSent) {
+      res.status(500).send(err.message);
+    }
+  });
 });
 
 // Live sessions (world state) kept in memory with serverless auto-reconstitution
@@ -176,7 +253,14 @@ app.post('/api/sessions', (req, res) => {
   if (req.body?.lang) db.updateChild(child.id, { lang: req.body.lang });
   const lang = child.lang;
   const returning = db.sessionsForChild(child.id).length > 0;
-  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || null;
+  let clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || null;
+  let roleKeys = req.body?.roleKeys || null;
+  if (!roleKeys && req.headers['x-role-keys']) {
+    try { roleKeys = JSON.parse(req.headers['x-role-keys']); } catch {}
+  }
+  if (roleKeys && typeof roleKeys === 'object') {
+    clientKey = typeof clientKey === 'string' ? { master: clientKey, ...roleKeys } : roleKeys;
+  }
   const state = brain.newSession(child, lang);
   if (clientKey) state.clientKey = clientKey;
   const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: 'sess_' + Date.now(), turns: [] };
@@ -194,7 +278,14 @@ app.post('/api/sessions/:id/say', async (req, res) => {
   const text = String(req.body?.text || '').slice(0, 500);
   const source = ['voice', 'button', 'typed', 'silence'].includes(req.body?.source) ? req.body.source : 'typed';
   if (source !== 'silence' && !text.trim()) return res.status(400).json({ error: 'Nothing heard' });
-  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  let clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  let roleKeys = req.body?.roleKeys || null;
+  if (!roleKeys && req.headers['x-role-keys']) {
+    try { roleKeys = JSON.parse(req.headers['x-role-keys']); } catch {}
+  }
+  if (roleKeys && typeof roleKeys === 'object') {
+    clientKey = typeof clientKey === 'string' ? { master: clientKey, ...roleKeys } : { ...(s.clientKey || {}), ...roleKeys };
+  }
   if (clientKey) { s.clientKey = clientKey; if (s.state) s.state.clientKey = clientKey; }
   s.lastActive = Date.now();
   try {
@@ -215,7 +306,14 @@ app.post('/api/sessions/:id/say', async (req, res) => {
 app.post('/api/sessions/:id/scene', async (req, res) => {
   const s = resolveSession(req.params.id, req.body?.childId, req.body);
   const scene = String(req.body?.scene || 'home');
-  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  let clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  let roleKeys = req.body?.roleKeys || null;
+  if (!roleKeys && req.headers['x-role-keys']) {
+    try { roleKeys = JSON.parse(req.headers['x-role-keys']); } catch {}
+  }
+  if (roleKeys && typeof roleKeys === 'object') {
+    clientKey = typeof clientKey === 'string' ? { master: clientKey, ...roleKeys } : { ...(s.clientKey || {}), ...roleKeys };
+  }
   if (clientKey) { s.clientKey = clientKey; if (s.state) s.state.clientKey = clientKey; }
   const phrases = {
     en: { home: 'let us go home', restaurant: 'let us go to the restaurant', shop: 'let us go to the shop', hospital: 'let us go to the hospital', stage: 'let us go to the stage', emergency: 'help my pet', create: 'let us create our own world', park: 'let us go to the park', beach: 'let us go to the beach', space: 'let us go to space' },

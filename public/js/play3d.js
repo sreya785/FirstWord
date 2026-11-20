@@ -167,9 +167,26 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
       <label class="switch"><span>🎵 Ambience</span><input type="checkbox" id="setAmb" checked></label>
       <div class="drawer-lang"><span>${L('language')}</span><div class="lang-toggle"><button data-lang="en" class="${lang === 'en' ? 'active' : ''}">EN</button><button data-lang="bn" class="${lang === 'bn' ? 'active' : ''}">বাং</button></div></div>
       <div class="drawer-api-card" style="margin:8px 0;padding:10px 12px;background:rgba(255,255,255,0.7);border-radius:12px;display:flex;flex-direction:column;gap:5px;">
-        <span class="small" style="font-weight:800;color:var(--brand)">✨ Google AI Studio API Key (Bangla AI):</span>
-        <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy... (Google AI Studio Key)" style="padding:6px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;width:100%;box-sizing:border-box;">
-        <span class="small muted" style="font-size:10px;line-height:1.3;">${lang === 'bn' ? 'বাংলা চমৎকারভাবে বুঝতে Google AI Studio API Key ব্যবহার করুন।' : 'Use Google AI Studio API Key for smart conversational Bangla & English.'}</span>
+        <span class="small" style="font-weight:800;color:var(--brand)">✨ Google AI Studio API Key (Bangla & English AI):</span>
+        <input type="password" id="geminiApiKeyInput" placeholder="Pre-configured & Live Active (AIzaSy...)" style="padding:6px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;width:100%;box-sizing:border-box;">
+        <details style="margin-top:4px;">
+          <summary class="small" style="cursor:pointer;color:var(--brand);font-weight:700;">🎭 ${lang === 'bn' ? 'প্রতিটি চরিত্রের আলাদা API Key (দোকান, শেফ, ডাক্তার, ইত্যাদি)' : 'Separate Character API Keys (Shop, Chef, Doctor, Pet)'}</summary>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-top:6px;padding:6px;background:rgba(240,249,255,0.8);border-radius:8px;">
+            <label class="small" style="font-size:10px;">🛒 ${lang === 'bn' ? 'দোকানের ক্রেতা' : 'Shop Customer'}:</label>
+            <input type="password" id="keyShopCustomerInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+            <label class="small" style="font-size:10px;">🍽️ ${lang === 'bn' ? 'রেস্টুরেন্ট অতিথি' : 'Restaurant Customer'}:</label>
+            <input type="password" id="keyRestCustomerInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+            <label class="small" style="font-size:10px;">🧑‍🍳 ${lang === 'bn' ? 'মাস্টার শেফ রাফি' : 'Chef Rafi'}:</label>
+            <input type="password" id="keyChefInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+            <label class="small" style="font-size:10px;">👩‍⚕️ ${lang === 'bn' ? 'ডাক্তার মিতু' : 'Doctor Mitu'}:</label>
+            <input type="password" id="keyDoctorInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+            <label class="small" style="font-size:10px;">👏 ${lang === 'bn' ? 'মঞ্চের দর্শক' : 'Stage Audience'}:</label>
+            <input type="password" id="keyAudienceInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+            <label class="small" style="font-size:10px;">🐱 ${lang === 'bn' ? 'পোষা বন্ধু মোমো' : 'Pet Momo'}:</label>
+            <input type="password" id="keyPetInput" placeholder="Pre-configured & Active" style="padding:4px 8px;border-radius:6px;border:1px solid #cbd5e1;font-size:11px;">
+          </div>
+        </details>
+        <span class="small muted" style="font-size:10px;line-height:1.3;">${lang === 'bn' ? 'সব চরিত্রের জন্য আলাদা API Key তৈরি করা আছে। নতুন Key দিতে চাইলে ওপরের ঘরে বসান।' : 'Pre-configured separate keys are active for all characters. Custom keys can be entered above.'}</span>
       </div>
       <p class="muted small">${speech.supported ? (lang === 'bn' ? 'কথা বলো, টাইপ করো বা ফ্রেজ ট্যাপ করো — সবই ঠিক। ভয়েস দিয়ে বলতে পারো "রেস্টুরেন্টে চলো", "দোকানে চলো", "জুম ইন" ইত্যাদি।' : 'Talk, type or tap a phrase. With voice control you can simply say "Go to restaurant", "Take me to shop", "Zoom in", "Dance", etc.') : L('noMic')}</p>
       <div class="pause-actions">
@@ -1075,6 +1092,23 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
     geminiInput.addEventListener('input', (e) => {
       localStorage.setItem('fw_gemini_api_key', e.target.value.trim());
     });
+  }
+  const roleInputs = [
+    { id: 'keyShopCustomerInput', key: 'fw_gemini_key_shop_customer' },
+    { id: 'keyRestCustomerInput', key: 'fw_gemini_key_restaurant_customer' },
+    { id: 'keyChefInput', key: 'fw_gemini_key_restaurant_chef' },
+    { id: 'keyDoctorInput', key: 'fw_gemini_key_hospital_doctor' },
+    { id: 'keyAudienceInput', key: 'fw_gemini_key_stage_audience' },
+    { id: 'keyPetInput', key: 'fw_gemini_key_pet' },
+  ];
+  for (const r of roleInputs) {
+    const inp = $(r.id);
+    if (inp) {
+      inp.value = localStorage.getItem(r.key) || '';
+      inp.addEventListener('input', (e) => {
+        localStorage.setItem(r.key, e.target.value.trim());
+      });
+    }
   }
   el.mic.addEventListener('click', () => { if (S.listening) { speech.stop(); return; } if (S.speaking) { speech.cancel(); return; } startListening(); });
   const showTypebox = (on, msg = '') => {

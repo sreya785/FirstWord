@@ -5,7 +5,7 @@ const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 export const speech = {
   supported: Boolean(SR),
-  ttsSupported: !!(typeof window !== 'undefined' && window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function'),
+  ttsSupported: !!(typeof window !== 'undefined' && (window.speechSynthesis || typeof Audio !== 'undefined')),
   lang: 'en-US',
   recognition: null,
   listening: false,
@@ -16,6 +16,7 @@ export const speech = {
   onError: null,
   voices: [],
   activeVoice: null,
+  activeAudio: null,
   muted: false,
 
   setLang(l) {
@@ -214,13 +215,25 @@ export const speech = {
   },
 
   cancel() {
-    if (this.ttsSupported) window.speechSynthesis.cancel();
+    if (this.activeAudio) {
+      try {
+        this.activeAudio.pause();
+        this.activeAudio.currentTime = 0;
+      } catch {}
+      this.activeAudio = null;
+    }
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      try { window.speechSynthesis.cancel(); } catch {}
+    }
+    this.pausedForSpeech = false;
   },
 
-  /** Speak a list of {text, who} items sequentially with a warm, natural storytelling female voice */
+  /** Speak a list of {text, who} items sequentially with a warm, natural voice */
   speakAll(items, lang, { onStart, onEnd, onBoundary } = {}) {
     if (!this.ttsSupported || this.muted || !items.length) return Promise.resolve();
     this.abort(); // stop listening while pet speaks so it does not hear itself
+    this.pausedForSpeech = true;
+    this.onStateChange?.(false);
     const isBn = lang === 'bn' || (this.lang && this.lang.startsWith('bn'));
     const voice = this.pickVoice(isBn ? 'bn' : 'en');
 
@@ -230,6 +243,11 @@ export const speech = {
 
       const finishAll = () => {
         if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
+        if (this.activeAudio) {
+          try { this.activeAudio.pause(); } catch {}
+          this.activeAudio = null;
+        }
+        this.pausedForSpeech = false;
         resolve();
       };
 
@@ -239,79 +257,142 @@ export const speech = {
         const cleanText = item.text.replace(/\(.*?\)/g, '').trim();
         if (!cleanText) { next(); return; }
 
-        const u = new SpeechSynthesisUtterance(cleanText);
-        u.lang = isBn ? 'bn-BD' : 'en-US';
-        if (voice && (!isBn || (voice.lang || '').toLowerCase().startsWith('bn') || /bangla|bengali|বাংলা/i.test(voice.name || ''))) {
-          u.voice = voice;
-        }
+        const hasBangla = /[\u0980-\u09FF]/.test(cleanText) || isBn;
 
-        // Warm, natural storytelling female voice calibration:
-        // Grounded natural pitch ~1.02 and gentle relaxed pacing ~0.90 matching localhost
-        let pitch = 1.0;
-        let rate = 0.90;
-
-        if (item.who === 'pet') {
-          pitch = 1.02; // Warm, friendly female storytelling companion
-          rate = 0.90;  // Relaxed, soothing cadence
-        } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
-          pitch = 0.98; // Caring, calm female doctor
-          rate = 0.88;
-        } else {
-          pitch = 1.00;
-          rate = 0.92;
-        }
-
-        u.pitch = pitch;
-        u.rate = rate;
-        u.volume = 1;
-
-        let started = false, finished = false;
-        let startGuard = null, maxGuard = null;
-
+        let finished = false;
         const finish = () => {
           if (finished) return;
           finished = true;
-          if (startGuard) clearTimeout(startGuard);
-          if (maxGuard) clearTimeout(maxGuard);
           onEnd?.(item);
-          next();
+          setTimeout(next, 100);
         };
 
-        u.onstart = () => {
-          started = true;
-          if (startGuard) clearTimeout(startGuard);
-          onStart?.(item);
-        };
-        u.onboundary = (ev) => { if (!finished) onBoundary?.(item, ev.charIndex ?? 0, ev.name); };
-        u.onend = finish;
-        u.onerror = (e) => {
-          // If interrupted or canceled, finish gracefully without crashing chain
-          finish();
-        };
+        // 1. Natural Google Bangla / Audio Streaming Engine
+        // Bypasses browser lack of offline Bangla voice and delivers clear, authentic Bangla speech
+        if (hasBangla) {
+          const ttsUrl = `/api/tts?q=${encodeURIComponent(cleanText)}&tl=bn`;
+          let audio = null;
+          let playTimer = null;
 
-        // Generous safeguard in case browser TTS hangs without firing onstart/onerror (8s)
-        startGuard = setTimeout(() => {
-          if (!started) {
-            finish();
+          try {
+            audio = new Audio(ttsUrl);
+            this.activeAudio = audio;
+
+            audio.onplay = () => {
+              onStart?.(item);
+            };
+
+            audio.ontimeupdate = () => {
+              if (audio.duration && !finished) {
+                const charIndex = Math.min(cleanText.length, Math.floor((audio.currentTime / audio.duration) * cleanText.length));
+                onBoundary?.(item, charIndex);
+              }
+            };
+
+            audio.onended = () => {
+              if (playTimer) clearTimeout(playTimer);
+              finish();
+            };
+
+            audio.onerror = () => {
+              if (playTimer) clearTimeout(playTimer);
+              fallbackSpeechSynthesis();
+            };
+
+            playTimer = setTimeout(() => {
+              if (!finished && (!audio.currentTime || audio.paused)) {
+                fallbackSpeechSynthesis();
+              }
+            }, 6000);
+
+            const p = audio.play();
+            if (p && typeof p.catch === 'function') {
+              p.catch(() => {
+                if (playTimer) clearTimeout(playTimer);
+                fallbackSpeechSynthesis();
+              });
+            }
+            return;
+          } catch {
+            fallbackSpeechSynthesis();
+            return;
           }
-        }, 8000);
+        } else {
+          fallbackSpeechSynthesis();
+        }
 
-        // Generous maximum utterance duration safeguard (does not prematurely cancel)
-        const durEst = Math.max(8000, 4000 + cleanText.length * 180);
-        maxGuard = setTimeout(() => {
-          finish();
-        }, durEst);
+        // 2. Web Speech API Synthesizer (for English storytelling voices Jenny/Samantha or offline fallback)
+        function fallbackSpeechSynthesis() {
+          if (typeof window === 'undefined' || !window.speechSynthesis) {
+            finish();
+            return;
+          }
 
-        try {
-          window.speechSynthesis.speak(u);
-        } catch {
-          finish();
+          const u = new SpeechSynthesisUtterance(cleanText);
+          u.lang = isBn ? 'bn-BD' : 'en-US';
+          if (voice && (!isBn || (voice.lang || '').toLowerCase().startsWith('bn') || /bangla|bengali|বাংলা/i.test(voice.name || ''))) {
+            u.voice = voice;
+          }
+
+          let pitch = 1.0;
+          let rate = 0.90;
+
+          if (item.who === 'pet') {
+            pitch = 1.02; // Warm, friendly female storytelling companion
+            rate = 0.90;  // Relaxed, soothing cadence
+          } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
+            pitch = 0.98; // Caring, calm female doctor
+            rate = 0.88;
+          } else {
+            pitch = 1.00;
+            rate = 0.92;
+          }
+
+          u.pitch = pitch;
+          u.rate = rate;
+          u.volume = 1;
+
+          let started = false;
+          let startGuard = null, maxGuard = null;
+
+          const finishWebSpeech = () => {
+            if (finished) return;
+            finished = true;
+            if (startGuard) clearTimeout(startGuard);
+            if (maxGuard) clearTimeout(maxGuard);
+            onEnd?.(item);
+            setTimeout(next, 100);
+          };
+
+          u.onstart = () => {
+            started = true;
+            if (startGuard) clearTimeout(startGuard);
+            onStart?.(item);
+          };
+          u.onboundary = (ev) => { if (!finished) onBoundary?.(item, ev.charIndex ?? 0, ev.name); };
+          u.onend = finishWebSpeech;
+          u.onerror = finishWebSpeech;
+
+          startGuard = setTimeout(() => {
+            if (!started) finishWebSpeech();
+          }, 6000);
+
+          const durEst = Math.max(6000, 3000 + cleanText.length * 150);
+          maxGuard = setTimeout(() => {
+            finishWebSpeech();
+          }, durEst);
+
+          try {
+            window.speechSynthesis.speak(u);
+          } catch {
+            finishWebSpeech();
+          }
         }
       };
 
       // Ensure speech synthesis is awake and unpaused
       try {
-        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        if (window.speechSynthesis && window.speechSynthesis.paused) window.speechSynthesis.resume();
       } catch {}
 
       next();
@@ -319,7 +400,7 @@ export const speech = {
       // Keep speech synthesis active on long dialogues without interrupting
       keepAlive = setInterval(() => {
         try {
-          if (!window.speechSynthesis.speaking) {
+          if (!window.speechSynthesis || !window.speechSynthesis.speaking) {
             clearInterval(keepAlive);
             keepAlive = null;
             return;

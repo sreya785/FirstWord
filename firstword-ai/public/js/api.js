@@ -4,8 +4,17 @@ async function req(method, url, body, headers = {}) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timeoutId = controller ? setTimeout(() => controller.abort(), 18000) : null;
   const storedGeminiKey = (typeof localStorage !== 'undefined') ? (localStorage.getItem('fw_gemini_api_key') || localStorage.getItem('fw_google_key') || '') : '';
+  const roleKeys = {};
+  if (typeof localStorage !== 'undefined') {
+    const roles = ['shop_customer', 'restaurant_customer', 'restaurant_chef', 'hospital_doctor', 'stage_audience', 'pet'];
+    for (const r of roles) {
+      const k = localStorage.getItem(`fw_gemini_key_${r}`);
+      if (k && k.trim()) roleKeys[r] = k.trim();
+    }
+  }
   const finalHeaders = { 'content-type': 'application/json', ...headers };
   if (storedGeminiKey) finalHeaders['x-gemini-key'] = storedGeminiKey;
+  if (Object.keys(roleKeys).length > 0) finalHeaders['x-role-keys'] = JSON.stringify(roleKeys);
 
   try {
     const res = await fetch(url, {

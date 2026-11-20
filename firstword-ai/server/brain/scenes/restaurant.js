@@ -29,13 +29,13 @@ function listFoods(keys, lang) {
 
 async function chefSay(r, text, lang, utterance = '', context = {}, clientKey = null) {
   let line = text;
-  if (utterance && qwen.isRoleEnabled('restaurant_chef', lang, clientKey)) {
+  if (qwen.isRoleEnabled('restaurant_chef', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'restaurant_chef',
       lang,
-      utterance,
+      utterance: utterance || text,
       clientKey,
-      context: { chef: 'Chef Rafi', ...context },
+      context: { chef: 'Chef Rafi', situation: text, ...context },
     });
     if (aiLine) line = aiLine;
   }
@@ -95,13 +95,14 @@ async function customerSays(session, ctx, r, text, utterance = '', context = {})
   placeActors(session, lang);
   let line = text;
   const clientKey = session?.clientKey || ctx?.clientKey || null;
-  if (utterance && qwen.isRoleEnabled('restaurant_customer', lang, clientKey)) {
+  const childSpeech = utterance || ctx?.utterance || ctx?.raw || '';
+  if (qwen.isRoleEnabled('restaurant_customer', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'restaurant_customer',
       lang,
-      utterance,
+      utterance: childSpeech || text,
       clientKey,
-      context: { table: session.sceneState?.customerTable, order: session.sceneState?.customerOrder, ...context },
+      context: { table: session.sceneState?.customerTable, order: session.sceneState?.customerOrder, situation: text, ...context },
     });
     if (aiLine) line = aiLine;
   }

@@ -201,8 +201,7 @@ export class World {
         if (!g.userData.billboard && !fly) { const sh = blobShadow(0.6); sh.scale.setScalar(1 / g.scale.x); g.add(sh); }
         this.actorG.add(g);
         if (this.location === 'shop' && c.role === 'customer') {
-          const yaw = Math.atan2(0 - from.x, -4.8 - from.z);
-          g.rotation.set(0, yaw, 0);
+          g.lookAt(0.35, g.position.y, -5.5);
         }
         if (this.location === 'shop' && (c.role === 'shopkeeper' || c.role === 'friend')) g.rotation.set(0, 0, 0);
         a = { id, key: c.key, kind, g, named: built.named, data: c, color: c.color || null, target, from, walk: { t0: this.t, dur: 1.9 }, fly, phase: Math.random() * 6, born: this.t, scale: g.scale.x, baseY: target.y };
@@ -218,8 +217,7 @@ export class World {
             a.target = new THREE.Vector3(qx, 0, qz);
             a.walk = { t0: this.t, dur: 1.2 };
           }
-          const yaw = Math.atan2(0 - a.g.position.x, -4.8 - a.g.position.z);
-          a.g.rotation.set(0, yaw, 0);
+          a.g.lookAt(0.35, a.g.position.y, -5.5);
         }
         // customers / chefs with custom world coords slide to their new spot instead of teleporting
         const roleCustom = this.location === 'restaurant' && (c.role === 'customer' || c.role === 'diner' || c.role === 'chef');
@@ -341,15 +339,13 @@ export class World {
       if (p >= 1) {
         a.walk = null; a.baseY = a.target.y; g.position.copy(a.target);
         if (this.location === 'shop' && a.data?.role === 'customer') {
-          const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
-          g.rotation.set(0, yaw, 0);
+          g.lookAt(0.35, g.position.y, -5.5);
         }
         if (n.legL) { n.legL.rotation.x = n.legR.rotation.x = 0; }
         for (const l of ['legFL', 'legFR', 'legBL', 'legBR']) if (n[l]) n[l].rotation.x = 0;
       }
       if (this.location === 'shop' && a.data?.role === 'customer') {
-        const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
-        g.rotation.set(0, yaw, 0);
+        g.lookAt(0.35, g.position.y, -5.5);
       }
       return;
     }
@@ -357,8 +353,7 @@ export class World {
     const speaking = speakingNow;
     // face the counter / pet / camera
     if (this.location === 'shop' && a.data?.role === 'customer') {
-      const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
-      g.rotation.set(0, yaw, 0);
+      g.lookAt(0.35, g.position.y, -5.5);
     } else if (a.kind !== 'object' && petPos) {
       let facePt = petPos;
       if (this.location === 'shop' && a.data) {

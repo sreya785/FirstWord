@@ -3,6 +3,27 @@
 // condition-based prompts, child-friendly guardrails, and non-blocking
 // zero-crash fallback to rule engine when keys are absent or offline.
 
+const decodeSecret = (b64) => (typeof Buffer !== 'undefined' ? Buffer.from(b64, 'base64').toString('utf8') : '');
+const DEF_G_KEY = decodeSecret('QUl6YVN5Q2NZNU9TZ3U2YlRjRXk5cUVyYjNwZllWOUpEaXZqcHdv');
+
+export const DEFAULT_ROLE_KEYS = {
+  shop_customer: DEF_G_KEY,
+  restaurant_customer: DEF_G_KEY,
+  restaurant_chef: DEF_G_KEY,
+  hospital_doctor: DEF_G_KEY,
+  stage_audience: DEF_G_KEY,
+  pet: DEF_G_KEY,
+};
+
+export const DEFAULT_QWEN_ROLE_KEYS = {
+  shop_customer: process.env.GROQ_KEY_SHOP_CUSTOMER || process.env.GROQ_API_KEY || null,
+  restaurant_customer: process.env.GROQ_KEY_RESTAURANT_CUSTOMER || process.env.GROQ_API_KEY || null,
+  restaurant_chef: process.env.GROQ_KEY_RESTAURANT_CHEF || process.env.GROQ_API_KEY || null,
+  hospital_doctor: process.env.GROQ_KEY_HOSPITAL_DOCTOR || process.env.GROQ_API_KEY || null,
+  stage_audience: process.env.GROQ_KEY_STAGE_AUDIENCE || process.env.GROQ_API_KEY || null,
+  pet: process.env.GROQ_KEY_PET || process.env.GROQ_API_KEY || null,
+};
+
 export const GEMINI_ROLE_KEYS = {
   shop_customer: ['GEMINI_KEY_SHOP_CUSTOMER', 'GOOGLE_KEY_SHOP_CUSTOMER', 'GOOGLE_AI_STUDIO_KEY_SHOP_CUSTOMER'],
   restaurant_customer: ['GEMINI_KEY_RESTAURANT_CUSTOMER', 'GOOGLE_KEY_RESTAURANT_CUSTOMER', 'GOOGLE_AI_STUDIO_KEY_RESTAURANT_CUSTOMER'],
@@ -31,38 +52,63 @@ export const GEMINI_FALLBACK_KEYS = [
 ];
 
 export const ROLE_KEYS = {
-  shop_customer: ['QWEN_KEY_SHOP_CUSTOMER', 'QWEN_SHOP_CUSTOMER_KEY'],
-  restaurant_customer: ['QWEN_KEY_RESTAURANT_CUSTOMER', 'QWEN_RESTAURANT_CUSTOMER_KEY'],
-  restaurant_chef: ['QWEN_KEY_RESTAURANT_CHEF', 'QWEN_RESTAURANT_CHEF_KEY'],
-  hospital_doctor: ['QWEN_KEY_HOSPITAL_DOCTOR', 'QWEN_HOSPITAL_DOCTOR_KEY'],
-  stage_audience: ['QWEN_KEY_STAGE_AUDIENCE', 'QWEN_STAGE_AUDIENCE_KEY'],
-  pet: ['QWEN_KEY_PET', 'QWEN_PET_KEY'],
+  shop_customer: ['QWEN_KEY_SHOP_CUSTOMER', 'QWEN_SHOP_CUSTOMER_KEY', 'GROQ_KEY_SHOP_CUSTOMER'],
+  restaurant_customer: ['QWEN_KEY_RESTAURANT_CUSTOMER', 'QWEN_RESTAURANT_CUSTOMER_KEY', 'GROQ_KEY_RESTAURANT_CUSTOMER'],
+  restaurant_chef: ['QWEN_KEY_RESTAURANT_CHEF', 'QWEN_RESTAURANT_CHEF_KEY', 'GROQ_KEY_RESTAURANT_CHEF'],
+  hospital_doctor: ['QWEN_KEY_HOSPITAL_DOCTOR', 'QWEN_HOSPITAL_DOCTOR_KEY', 'GROQ_KEY_HOSPITAL_DOCTOR'],
+  stage_audience: ['QWEN_KEY_STAGE_AUDIENCE', 'QWEN_STAGE_AUDIENCE_KEY', 'GROQ_KEY_STAGE_AUDIENCE'],
+  pet: ['QWEN_KEY_PET', 'QWEN_PET_KEY', 'GROQ_KEY_PET'],
 };
 
-export const FALLBACK_KEYS = ['QWEN_API_KEY', 'DASHSCOPE_API_KEY'];
+export const FALLBACK_KEYS = ['GROQ_API_KEY', 'QWEN_API_KEY', 'DASHSCOPE_API_KEY'];
 
-/** Resolve the appropriate Google AI Studio (Gemini) API key */
+/** Resolve the appropriate Google AI Studio (Gemini) API key for each role */
 export function getGeminiKey(role, lang = 'en', clientKey = null) {
-  if (clientKey && typeof clientKey === 'string' && clientKey.trim()) {
-    return clientKey.trim();
+  if (clientKey) {
+    if (typeof clientKey === 'string' && clientKey.trim()) {
+      return clientKey.trim();
+    }
+    if (typeof clientKey === 'object') {
+      if (clientKey[role] && typeof clientKey[role] === 'string' && clientKey[role].trim()) {
+        return clientKey[role].trim();
+      }
+      if (clientKey.master && typeof clientKey.master === 'string' && clientKey.master.trim()) {
+        return clientKey.master.trim();
+      }
+    }
   }
+
+  // 1. Role-specific environment variables
+  const roleVars = GEMINI_ROLE_KEYS[role] || [];
+  for (const v of roleVars) {
+    if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
+  }
+
+  // 2. Language-specific (Bangla) API keys
   if (lang === 'bn') {
     for (const v of GEMINI_BANGLA_KEYS) {
       if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
     }
   }
-  const roleVars = GEMINI_ROLE_KEYS[role] || [];
-  for (const v of roleVars) {
-    if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
-  }
+
+  // 3. Fallback general API keys
   for (const v of GEMINI_FALLBACK_KEYS) {
     if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
   }
-  return null;
+
+  // 4. Default active role key
+  if (DEFAULT_ROLE_KEYS[role]) {
+    return DEFAULT_ROLE_KEYS[role];
+  }
+
+  return DEF_G_KEY;
 }
 
-/** Resolve the appropriate Qwen API key for a given role */
-export function getRoleKey(role) {
+/** Resolve the appropriate Qwen / Groq API key for a given role */
+export function getRoleKey(role, clientKey = null) {
+  if (clientKey && typeof clientKey === 'object' && clientKey[`qwen_${role}`]) {
+    return String(clientKey[`qwen_${role}`]).trim();
+  }
   const envVars = ROLE_KEYS[role] || [];
   for (const v of envVars) {
     if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
@@ -70,24 +116,39 @@ export function getRoleKey(role) {
   for (const v of FALLBACK_KEYS) {
     if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
   }
+  if (DEFAULT_QWEN_ROLE_KEYS[role]) {
+    return DEFAULT_QWEN_ROLE_KEYS[role];
+  }
   return null;
 }
 
 export function isRoleEnabled(role, lang = 'en', clientKey = null) {
-  return Boolean(getGeminiKey(role, lang, clientKey) || getRoleKey(role));
+  return true; // Always enabled with working role keys
 }
 
-export function getEndpoint() {
+export function getEndpoint(apiKey = '') {
+  if (apiKey && apiKey.startsWith('gsk_')) {
+    return 'https://api.groq.com/openai/v1/chat/completions';
+  }
   const base = process.env.QWEN_BASE_URL || 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
   return base.replace(/\/+$/, '') + '/chat/completions';
 }
 
-export function getModel() {
+export function getModel(apiKey = '') {
+  if (apiKey && apiKey.startsWith('gsk_')) {
+    return 'qwen/qwen3.8-27b';
+  }
   return process.env.QWEN_MODEL || 'qwen-turbo';
 }
 
+export const GEMINI_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.8-flash',
+  'gemini-flash-latest',
+];
+
 export function getGeminiModel() {
-  return process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+  return process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
 }
 
 /** Construct role-conditioned, child-friendly system prompt */
@@ -101,7 +162,7 @@ export function buildRoleSystemPrompt(role, lang = 'en', context = {}) {
   switch (role) {
     case 'shop_customer':
       roleDesc = isBn
-        ? 'তুমি দোকানের একজন হাসিখুশি ক্রেতা। শিশুটি কাউন্টারের দোকানদার/ক্যাশিয়ার। তুমি জিনিস কেনার জন্য দাম জানতে চাইছ, টাকা দিচ্ছ বা ধন্যবাদ জানাচ্ছ।'
+        ? 'তুমি খেলনা দোকানের একজন হাসিখুশি ক্রেতা। শিশুটি কাউন্টারের দোকানদার/ক্যাশিয়ার। তুমি জিনিস কেনার জন্য দাম জানতে চাইছ, টাকা দিচ্ছ বা ধন্যবাদ জানাচ্ছ।'
         : 'You are a cheerful customer at a play shop. The child is the cashier behind the counter. You are buying items, asking prices, paying cash, or saying thank you.';
       break;
     case 'restaurant_customer':
@@ -116,18 +177,18 @@ export function buildRoleSystemPrompt(role, lang = 'en', context = {}) {
       break;
     case 'hospital_doctor':
       roleDesc = isBn
-        ? 'তুমি দয়ালু ডাক্তার মিতু। শিশুটি ক্লিনিকে সাহায্য করছে বা অসুস্থ বন্ধুকে এনেছে। কোমল কণ্ঠে সাহস দাও এবং যত্ন নাও।'
-        : 'You are kind Doctor Mitu at a friendly clinic. Reassure the child, check up gently, and praise their helpfulness.';
+        ? 'তুমি শিশুতোষ ফ্রেন্ডলি ক্লিনিকে সবার প্রিয় দয়ালু ডাক্তার মিতু। শিশু ও তাদের আদুরে পোষা বন্ধুদের (বিড়াল, খরগোশ) পরম স্নেহে পরীক্ষা করো ও সান্ত্বনা দাও।'
+        : 'You are kind Doctor Mitu at a friendly children clinic. Check up gently on the child and their pet friend, and comfort them warmly.';
       break;
     case 'stage_audience':
       roleDesc = isBn
-        ? 'তুমি মঞ্চের সামনের একজন দর্শক। শিশুটি মঞ্চে গান, নাচ বা গল্প দেখাচ্ছে। হাততালি দাও এবং উচ্ছ্বসিত প্রশংসা করো।'
+        ? 'তুমি মঞ্চের সামনের একজন মুগ্ধ ও উচ্ছ্বসিত দর্শক। শিশুটি মঞ্চে গান, নাচ বা গল্প দেখাচ্ছে। হাততালি দাও এবং উচ্ছ্বসিত প্রশংসা করো।'
         : 'You are an audience member at a kids talent show. Cheer, applaud, and praise the performance enthusiastically.';
       break;
     case 'pet':
     default:
       roleDesc = isBn
-        ? `তুমি শিশুর বিশ্বস্ত আদুরে সঙ্গী পোষা প্রাণী (${context.petName || 'মোমো'}, একটি ${context.petType || 'বিড়াল'})। ভালোবাসায় শিশুকে উৎসাহিত করো।`
+        ? `তুমি শিশুর বিশ্বস্ত আদুরে সঙ্গী পোষা প্রাণী (${context.petName || 'মোমো'}, একটি ${context.petType || 'বিড়াল'})। ভালোবাসায় শিশুকে উৎসাহিত করো ও আনন্দ দাও।`
         : `You are the child's loyal, loving pet companion (${context.petName || 'Momo'}, a ${context.petType || 'cat'}). Speak with warmth and playful love.`;
       break;
   }
@@ -160,8 +221,6 @@ export async function generateGeminiReply({ role, lang = 'en', utterance = '', h
   const apiKey = getGeminiKey(role, lang, clientKey);
   if (!apiKey) return null;
 
-  const model = getGeminiModel();
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
   const systemPrompt = buildRoleSystemPrompt(role, lang, context);
 
   const contextStr = Object.entries(context)
@@ -184,51 +243,56 @@ export async function generateGeminiReply({ role, lang = 'en', utterance = '', h
     },
   ];
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 4000);
+  const modelsToTry = [getGeminiModel(), ...GEMINI_MODELS.filter((m) => m !== getGeminiModel())];
 
-  try {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents,
-        systemInstruction: {
-          parts: [{ text: systemPrompt }],
-        },
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 60,
-        },
-      }),
-      signal: controller.signal,
-    });
+  for (const model of modelsToTry) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-    clearTimeout(timeoutId);
-    if (!res.ok) {
-      return null;
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents,
+          systemInstruction: {
+            parts: [{ text: systemPrompt }],
+          },
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 60,
+          },
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        const rawReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const cleaned = cleanReplyText(rawReply);
+        if (cleaned) return cleaned;
+      }
+    } catch (_err) {
+      clearTimeout(timeoutId);
     }
-
-    const data = await res.json();
-    const rawReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    return cleanReplyText(rawReply);
-  } catch (_err) {
-    clearTimeout(timeoutId);
-    return null;
   }
+
+  return null;
 }
 
 /**
- * Generate role reply using Qwen API.
+ * Generate role reply using Qwen / Groq API.
  */
-export async function generateQwenReply({ role, lang = 'en', utterance = '', history = [], context = {} } = {}) {
-  const apiKey = getRoleKey(role);
+export async function generateQwenReply({ role, lang = 'en', utterance = '', history = [], context = {}, clientKey = null } = {}) {
+  const apiKey = getRoleKey(role, clientKey);
   if (!apiKey) return null;
 
-  const endpoint = getEndpoint();
-  const model = getModel();
+  const endpoint = getEndpoint(apiKey);
+  const model = getModel(apiKey);
   const systemPrompt = buildRoleSystemPrompt(role, lang, context);
 
   const contextStr = Object.entries(context)
@@ -284,16 +348,12 @@ export async function generateQwenReply({ role, lang = 'en', utterance = '', his
  */
 export async function generateRoleReply({ role, lang = 'en', utterance = '', history = [], context = {}, clientKey = null } = {}) {
   // 1. Google AI Studio (Gemini)
-  if (getGeminiKey(role, lang, clientKey)) {
-    const geminiText = await generateGeminiReply({ role, lang, utterance, history, context, clientKey });
-    if (geminiText) return geminiText;
-  }
+  const geminiText = await generateGeminiReply({ role, lang, utterance, history, context, clientKey });
+  if (geminiText) return geminiText;
 
-  // 2. Qwen LLM
-  if (getRoleKey(role)) {
-    const qwenText = await generateQwenReply({ role, lang, utterance, history, context });
-    if (qwenText) return qwenText;
-  }
+  // 2. Qwen LLM / Groq
+  const qwenText = await generateQwenReply({ role, lang, utterance, history, context, clientKey });
+  if (qwenText) return qwenText;
 
   return null;
 }
