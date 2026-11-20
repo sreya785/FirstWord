@@ -58,12 +58,30 @@ function resolveChild(childId, body = {}) {
 function resolveSession(sessionId, childId, body = {}) {
   let s = live.get(sessionId);
   if (!s) {
+    const saved = db.loadLiveSession ? db.loadLiveSession(sessionId) : null;
+    if (saved && saved.state) {
+      s = {
+        id: sessionId,
+        childId: saved.childId,
+        child: saved.child,
+        state: saved.state,
+        rec: saved.rec,
+        lastActive: Date.now(),
+      };
+      live.set(sessionId, s);
+      return s;
+    }
+
     const child = resolveChild(childId || body.childId, body);
     const lang = body.lang || child.lang || 'bn';
     const state = brain.newSession(child, lang);
+    if (body.location) {
+      state.world.location = body.location;
+    }
     const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: sessionId, turns: [] };
     s = { id: sessionId, childId: child.id, child, state, rec, lastActive: Date.now() };
     live.set(sessionId, s);
+    if (db.saveLiveSession) db.saveLiveSession(sessionId, s);
   }
   return s;
 }
@@ -161,6 +179,7 @@ app.post('/api/sessions', (req, res) => {
   const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: 'sess_' + Date.now(), turns: [] };
   const s = { id: rec.id, childId: child.id, child, state, rec, lastActive: Date.now() };
   live.set(s.id, s);
+  if (db.saveLiveSession) db.saveLiveSession(s.id, s);
   const greeting = brain.greet(state, child, lang, returning);
   greeting.stickerCount = (child.stickers || []).length;
   greeting.rewards = [];
@@ -179,6 +198,7 @@ app.post('/api/sessions/:id/say', async (req, res) => {
     response.rewards = checkRewards(s.child, response, s.rec, { text, source });
     response.stickerCount = (s.child.stickers || []).length;
     if (response.rewards.length) db.save();
+    if (db.saveLiveSession) db.saveLiveSession(s.id, s);
     res.json(response);
   } catch (e) {
     console.error('brain error:', e);
@@ -201,6 +221,7 @@ app.post('/api/sessions/:id/scene', async (req, res) => {
   response.rewards = checkRewards(s.child, response, s.rec, { text, source: 'button' });
   response.stickerCount = (s.child.stickers || []).length;
   if (response.rewards.length) db.save();
+  if (db.saveLiveSession) db.saveLiveSession(s.id, s);
   res.json(response);
 });
 

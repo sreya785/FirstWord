@@ -37,14 +37,14 @@ function getLocalKids() {
       const arr = JSON.parse(s);
       if (Array.isArray(arr) && arr.length > 0) return arr;
     }
-  } catch {}
+  } catch { }
   return [...DEFAULT_CHILDREN];
 }
 
 function saveLocalKids(kids) {
   try {
     localStorage.setItem('fw_cached_kids', JSON.stringify(kids));
-  } catch {}
+  } catch { }
 }
 
 export const api = {
@@ -67,7 +67,7 @@ export const api = {
     try {
       const res = await req('GET', `/api/children/${id}`);
       if (res && res.id) return res;
-    } catch {}
+    } catch { }
     const list = getLocalKids();
     const found = list.find((k) => k.id === id);
     if (found) return found;
@@ -78,7 +78,7 @@ export const api = {
     let child = null;
     try {
       child = await req('POST', '/api/children', data);
-    } catch {}
+    } catch { }
     if (!child || !child.id) {
       child = {
         id: 'child_' + Date.now().toString(36),
@@ -99,7 +99,7 @@ export const api = {
   deleteChild: (id, pin) => req('DELETE', `/api/children/${id}`, { pin }).catch(() => ({ ok: true })),
   deleteData: (id, pin) => req('DELETE', `/api/children/${id}/data`, { pin }).catch(() => ({ ok: true })),
   dashboard: (id, pin, range = 'all') => req('GET', `/api/children/${id}/dashboard?range=${encodeURIComponent(range)}`, null, { 'x-parent-pin': pin || '' }).catch(() => ({ child: { id, name: id }, summary: { totalMinutes: 15, wordsSpoken: 24, stickersUnlocked: 5 }, turns: [] })),
-  
+
   startSession: async (childId, lang) => {
     try {
       const res = await req('POST', '/api/sessions', { childId, lang });

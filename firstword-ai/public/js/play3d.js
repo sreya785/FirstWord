@@ -657,11 +657,6 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
         onBoundary: (item, charIndex) => { if (!S.destroyed) pullTyper(charIndex); },
         onEnd: () => finishTyper(),
       });
-      // Ensure browser speech synthesis has completely finished speaking before switching to listening
-      let safetyCount = 0;
-      while (window.speechSynthesis && window.speechSynthesis.speaking && safetyCount++ < 30) {
-        await sleep(100);
-      }
     } else {
       // no voice on this device (or sound is off): still let each line be "spoken" for as long as it
       // takes to read, so the character's mouth moves and the child can follow who is talking

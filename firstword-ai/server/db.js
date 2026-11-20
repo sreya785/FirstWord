@@ -17,6 +17,29 @@ export function getDbFile() {
 let db = { children: [], sessions: [] };
 let saveTimer = null;
 
+export function saveLiveSession(sessionId, data) {
+  try {
+    const dir = getDataDir();
+    const f = path.join(dir, `sess_${sessionId}.json`);
+    fs.writeFileSync(f, JSON.stringify(data));
+  } catch (e) {
+    console.error('saveLiveSession failed:', e.message);
+  }
+}
+
+export function loadLiveSession(sessionId) {
+  try {
+    const dir = getDataDir();
+    const f = path.join(dir, `sess_${sessionId}.json`);
+    if (fs.existsSync(f)) {
+      return JSON.parse(fs.readFileSync(f, 'utf8'));
+    }
+  } catch (e) {
+    console.error('loadLiveSession failed:', e.message);
+  }
+  return null;
+}
+
 export function flushSync() {
   if (saveTimer) {
     clearTimeout(saveTimer);

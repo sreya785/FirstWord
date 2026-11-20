@@ -125,44 +125,40 @@ export const speech = {
     if (!this.voices.length) this.loadVoices();
     const isBn = lang === 'bn' || (this.lang && this.lang.startsWith('bn'));
 
+    // 1. If playing in Bangla, look for genuine natural Bangla voices first
     if (isBn) {
-      const wantPrefixes = ['bn-bd', 'bn-in', 'bn', 'ben'];
+      const wantBn = ['bn-bd', 'bn-in', 'bn', 'ben'];
       const bnVoices = this.voices.filter((v) => {
         const vLang = (v.lang || '').replace('_', '-').toLowerCase();
         const vName = (v.name || '').toLowerCase();
-        return wantPrefixes.some((p) => vLang.startsWith(p)) || /bangla|bengali|বাংলা/i.test(vName);
+        return wantBn.some((p) => vLang.startsWith(p)) || /bangla|bengali|বাংলা/i.test(vName);
       });
 
-      // If browser doesn't have an offline/dedicated Bangla voice object,
-      // return null so it delegates to browser's native cloud Bangla TTS (Google বাংলা or Edge Online).
-      // NEVER fall back to an English voice for Bangla text!
-      if (!bnVoices.length) {
-        this.activeVoice = null;
-        return null;
+      if (bnVoices.length) {
+        const scoreBnVoice = (v) => {
+          const name = (v.name || '').toLowerCase();
+          let score = 0;
+          if (/nabanita/i.test(name)) score += 200; // Edge Natural bn-BD female
+          if (/tanishaa/i.test(name)) score += 180; // Edge Natural bn-IN female
+          if (/google.*বাংলা|google.*bengali/i.test(name)) score += 160;
+          if (/google/i.test(name)) score += 130;
+          if (/natural|neural|online/i.test(name)) score += 40;
+          if (/female/i.test(name)) score += 30;
+          if (/pradeep|bashkar|male/i.test(name)) score -= 20;
+          return score;
+        };
+        const sorted = [...bnVoices].sort((a, b) => scoreBnVoice(b) - scoreBnVoice(a));
+        this.activeVoice = sorted[0];
+        return this.activeVoice;
       }
-
-      const scoreBnVoice = (v) => {
-        const name = (v.name || '').toLowerCase();
-        let score = 0;
-        // Microsoft Edge Natural female Bangla voices (warm, fluent, expressive)
-        if (/nabanita/i.test(name)) score += 200; // bn-BD Natural female
-        if (/tanishaa/i.test(name)) score += 180; // bn-IN Natural female
-        // Google cloud / high quality Bangla voices
-        if (/google.*বাংলা|google.*bengali/i.test(name)) score += 160;
-        if (/google/i.test(name)) score += 130;
-        if (/natural|neural|online/i.test(name)) score += 40;
-        if (/female/i.test(name)) score += 30;
-        if (/pradeep|bashkar|male/i.test(name)) score -= 20;
-        return score;
-      };
-
-      const sorted = [...bnVoices].sort((a, b) => scoreBnVoice(b) - scoreBnVoice(a));
-      this.activeVoice = sorted[0] || null;
-      return this.activeVoice;
     }
 
-    // English voices
-    const wantPrefixes = ['en-us', 'en-gb', 'en-ca', 'en-au', 'en-in', 'en'];
+    // 2. High quality storytelling voice pool (Edge Natural Jenny/Aria, Google Female, Samantha, Zira)
+    // Works everywhere on localhost and cloud so the pet can ALWAYS easily speak aloud!
+    const wantPrefixes = isBn
+      ? ['bn-bd', 'bn-in', 'bn', 'en-us', 'en-gb', 'en']
+      : ['en-us', 'en-gb', 'en-ca', 'en-au', 'en-in', 'en'];
+
     const langVoices = this.voices.filter((v) => {
       const vLang = (v.lang || '').replace('_', '-').toLowerCase();
       return wantPrefixes.some((p) => vLang.startsWith(p));
@@ -241,45 +237,22 @@ export const speech = {
 
         const u = new SpeechSynthesisUtterance(cleanText);
         u.lang = isBn ? 'bn-BD' : 'en-US';
+        if (voice) u.voice = voice;
 
-        // STRICT VOICE ASSIGNMENT:
-        // Only assign u.voice if it genuinely matches the target language!
-        if (isBn) {
-          if (voice && ((voice.lang || '').toLowerCase().startsWith('bn') || /bangla|bengali|বাংলা/i.test(voice.name || ''))) {
-            u.voice = voice;
-          }
-          // If no dedicated Bangla voice object, leave u.voice unset (null)
-          // Browser will automatically use Google বাংলা or Edge Online Bangla!
-        } else if (voice) {
-          u.voice = voice;
-        }
-
-        // Natural, warm storytelling cadence calibration
+        // Warm, natural storytelling female voice calibration:
+        // Grounded natural pitch ~1.02 and gentle relaxed pacing ~0.90 matching localhost
         let pitch = 1.0;
-        let rate = 1.0;
+        let rate = 0.90;
 
-        if (isBn) {
-          rate = 1.0; // Fluent natural Bangla tempo (0.90 was sluggish & distorted)
-          if (item.who === 'pet') {
-            pitch = 1.12; // Cheerful, loving Momo pet companion
-          } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
-            pitch = 1.0;  // Warm, reassuring female doctor
-            rate = 0.96;
-          } else {
-            pitch = 1.02;
-            rate = 1.0;
-          }
+        if (item.who === 'pet') {
+          pitch = 1.02; // Warm, friendly female storytelling companion
+          rate = 0.90;  // Relaxed, soothing cadence
+        } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
+          pitch = 0.98; // Caring, calm female doctor
+          rate = 0.88;
         } else {
-          rate = 0.95;
-          if (item.who === 'pet') {
-            pitch = 1.08;
-          } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
-            pitch = 0.98;
-            rate = 0.90;
-          } else {
-            pitch = 1.00;
-            rate = 0.94;
-          }
+          pitch = 1.00;
+          rate = 0.92;
         }
 
         u.pitch = pitch;
