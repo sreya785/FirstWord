@@ -1,0 +1,10 @@
+{
+  "name": "firstword",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "cd firstword-ai && npm start",
+    "test": "cd firstword-ai && npm test"
+  }
+}

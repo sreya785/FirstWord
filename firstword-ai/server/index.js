@@ -181,7 +181,11 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Server error' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`FirstWord AI running at http://0.0.0.0:${PORT}`);
-  console.log(`Brain: ${ollama.enabled() ? `rule engine + optional Ollama (${process.env.OLLAMA_URL})` : 'rule engine (no external AI calls)'}`);
-});
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`FirstWord AI running at http://0.0.0.0:${PORT}`);
+    console.log(`Brain: ${ollama.enabled() ? `rule engine + optional Ollama (${process.env.OLLAMA_URL})` : 'rule engine (no external AI calls)'}`);
+  });
+}

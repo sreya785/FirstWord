@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/firstword-ai/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/firstword-ai/public/$1"
+    }
+  ]
+}

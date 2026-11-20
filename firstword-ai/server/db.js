@@ -7,6 +7,7 @@ import { computeSessionScore } from './dashboard.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export function getDataDir() {
+  if (process.env.VERCEL) return '/tmp';
   return process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 }
 export function getDbFile() {
@@ -37,6 +38,12 @@ export function load() {
     const dataDir = getDataDir();
     const dbFile = getDbFile();
     fs.mkdirSync(dataDir, { recursive: true });
+    if (!fs.existsSync(dbFile) && process.env.VERCEL) {
+      const seedFile = path.join(__dirname, '..', 'data', 'db.json');
+      if (fs.existsSync(seedFile)) {
+        try { fs.copyFileSync(seedFile, dbFile); } catch {}
+      }
+    }
     if (fs.existsSync(dbFile)) db = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
     else db = { children: [], sessions: [] };
     db.children ||= [];
