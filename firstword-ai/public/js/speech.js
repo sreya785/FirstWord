@@ -117,16 +117,52 @@ export const speech = {
 
   /**
    * Find the highest quality, warm natural storytelling female AI voice.
-   * Prioritizes Edge Natural Neural voices (Jenny/Aria), Google US/UK Female,
-   * Apple Samantha/Ava, and Windows Zira.
+   * For Bangla: Prioritizes Microsoft Nabanita (Edge Natural bn-BD), Tanishaa (bn-IN),
+   * Google বাংলা, or browser cloud Bangla TTS. NEVER falls back to English for Bengali text.
+   * For English: Prioritizes Edge Natural Jenny/Aria, Google US/UK, Samantha/Ava, Zira.
    */
   pickVoice(lang) {
     if (!this.voices.length) this.loadVoices();
     const isBn = lang === 'bn' || (this.lang && this.lang.startsWith('bn'));
-    const wantPrefixes = isBn
-      ? ['bn-bd', 'bn-in', 'bn']
-      : ['en-us', 'en-gb', 'en-ca', 'en-au', 'en-in', 'en'];
 
+    if (isBn) {
+      const wantPrefixes = ['bn-bd', 'bn-in', 'bn', 'ben'];
+      const bnVoices = this.voices.filter((v) => {
+        const vLang = (v.lang || '').replace('_', '-').toLowerCase();
+        const vName = (v.name || '').toLowerCase();
+        return wantPrefixes.some((p) => vLang.startsWith(p)) || /bangla|bengali|বাংলা/i.test(vName);
+      });
+
+      // If browser doesn't have an offline/dedicated Bangla voice object,
+      // return null so it delegates to browser's native cloud Bangla TTS (Google বাংলা or Edge Online).
+      // NEVER fall back to an English voice for Bangla text!
+      if (!bnVoices.length) {
+        this.activeVoice = null;
+        return null;
+      }
+
+      const scoreBnVoice = (v) => {
+        const name = (v.name || '').toLowerCase();
+        let score = 0;
+        // Microsoft Edge Natural female Bangla voices (warm, fluent, expressive)
+        if (/nabanita/i.test(name)) score += 200; // bn-BD Natural female
+        if (/tanishaa/i.test(name)) score += 180; // bn-IN Natural female
+        // Google cloud / high quality Bangla voices
+        if (/google.*বাংলা|google.*bengali/i.test(name)) score += 160;
+        if (/google/i.test(name)) score += 130;
+        if (/natural|neural|online/i.test(name)) score += 40;
+        if (/female/i.test(name)) score += 30;
+        if (/pradeep|bashkar|male/i.test(name)) score -= 20;
+        return score;
+      };
+
+      const sorted = [...bnVoices].sort((a, b) => scoreBnVoice(b) - scoreBnVoice(a));
+      this.activeVoice = sorted[0] || null;
+      return this.activeVoice;
+    }
+
+    // English voices
+    const wantPrefixes = ['en-us', 'en-gb', 'en-ca', 'en-au', 'en-in', 'en'];
     const langVoices = this.voices.filter((v) => {
       const vLang = (v.lang || '').replace('_', '-').toLowerCase();
       return wantPrefixes.some((p) => vLang.startsWith(p));
@@ -185,36 +221,65 @@ export const speech = {
   speakAll(items, lang, { onStart, onEnd, onBoundary } = {}) {
     if (!this.ttsSupported || this.muted || !items.length) return Promise.resolve();
     this.abort(); // stop listening while pet speaks so it does not hear itself
-    this.cancel();
-    const voice = this.pickVoice(lang);
+    const isBn = lang === 'bn' || (this.lang && this.lang.startsWith('bn'));
+    const voice = this.pickVoice(isBn ? 'bn' : 'en');
 
     return new Promise((resolve) => {
       let i = 0;
+      let keepAlive = null;
+
+      const finishAll = () => {
+        if (keepAlive) { clearInterval(keepAlive); keepAlive = null; }
+        resolve();
+      };
+
       const next = () => {
-        if (i >= items.length) { resolve(); return; }
+        if (i >= items.length) { finishAll(); return; }
         const item = items[i++];
         const cleanText = item.text.replace(/\(.*?\)/g, '').trim();
         if (!cleanText) { next(); return; }
 
         const u = new SpeechSynthesisUtterance(cleanText);
-        u.lang = lang === 'bn' ? 'bn-BD' : 'en-US';
-        if (voice) u.voice = voice;
+        u.lang = isBn ? 'bn-BD' : 'en-US';
 
-        // Warm, natural storytelling female voice calibration:
-        // Grounded natural pitch ~1.00 (not cartoonish/high-pitched 1.35)
-        // Gentle relaxed pacing ~0.90 for an engaging storybook companion feel
+        // STRICT VOICE ASSIGNMENT:
+        // Only assign u.voice if it genuinely matches the target language!
+        if (isBn) {
+          if (voice && ((voice.lang || '').toLowerCase().startsWith('bn') || /bangla|bengali|বাংলা/i.test(voice.name || ''))) {
+            u.voice = voice;
+          }
+          // If no dedicated Bangla voice object, leave u.voice unset (null)
+          // Browser will automatically use Google বাংলা or Edge Online Bangla!
+        } else if (voice) {
+          u.voice = voice;
+        }
+
+        // Natural, warm storytelling cadence calibration
         let pitch = 1.0;
-        let rate = 0.90;
+        let rate = 1.0;
 
-        if (item.who === 'pet') {
-          pitch = 1.02; // Warm, friendly female storytelling companion
-          rate = 0.90;  // Relaxed, soothing cadence
-        } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
-          pitch = 0.98; // Caring, calm female doctor
-          rate = 0.88;
+        if (isBn) {
+          rate = 1.0; // Fluent natural Bangla tempo (0.90 was sluggish & distorted)
+          if (item.who === 'pet') {
+            pitch = 1.12; // Cheerful, loving Momo pet companion
+          } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
+            pitch = 1.0;  // Warm, reassuring female doctor
+            rate = 0.96;
+          } else {
+            pitch = 1.02;
+            rate = 1.0;
+          }
         } else {
-          pitch = 1.00;
-          rate = 0.92;
+          rate = 0.95;
+          if (item.who === 'pet') {
+            pitch = 1.08;
+          } else if (item.who === 'doctor' || /doctor|ডাক্তার/i.test(item.name || item.key || '')) {
+            pitch = 0.98;
+            rate = 0.90;
+          } else {
+            pitch = 1.00;
+            rate = 0.94;
+          }
         }
 
         u.pitch = pitch;
@@ -222,43 +287,70 @@ export const speech = {
         u.volume = 1;
 
         let started = false, finished = false;
+        let startGuard = null, maxGuard = null;
+
         const finish = () => {
           if (finished) return;
           finished = true;
-          clearTimeout(startGuard);
-          clearTimeout(maxGuard);
+          if (startGuard) clearTimeout(startGuard);
+          if (maxGuard) clearTimeout(maxGuard);
           onEnd?.(item);
           next();
         };
 
-        u.onstart = () => { started = true; onStart?.(item); };
+        u.onstart = () => {
+          started = true;
+          if (startGuard) clearTimeout(startGuard);
+          onStart?.(item);
+        };
         u.onboundary = (ev) => { if (!finished) onBoundary?.(item, ev.charIndex ?? 0, ev.name); };
         u.onend = finish;
-        u.onerror = finish;
+        u.onerror = (e) => {
+          // If interrupted or canceled, finish gracefully without crashing chain
+          finish();
+        };
 
-        // Protective timers for browser edge cases
-        const startGuard = setTimeout(() => {
+        // Generous safeguard in case browser TTS hangs without firing onstart/onerror (8s)
+        startGuard = setTimeout(() => {
           if (!started) {
-            try { window.speechSynthesis.cancel(); } catch {}
             finish();
           }
-        }, 4000);
+        }, 8000);
 
-        const maxGuard = setTimeout(() => {
-          try { window.speechSynthesis.cancel(); } catch {}
+        // Generous maximum utterance duration safeguard (does not prematurely cancel)
+        const durEst = Math.max(8000, 4000 + cleanText.length * 180);
+        maxGuard = setTimeout(() => {
           finish();
-        }, 4000 + cleanText.length * 130);
+        }, durEst);
 
-        window.speechSynthesis.speak(u);
+        try {
+          window.speechSynthesis.speak(u);
+        } catch {
+          finish();
+        }
       };
+
+      // Ensure speech synthesis is awake and unpaused
+      try {
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+      } catch {}
 
       next();
 
-      // Keep speech synthesis active on long dialogues
-      const keepAlive = setInterval(() => {
-        if (!window.speechSynthesis.speaking) { clearInterval(keepAlive); return; }
-        window.speechSynthesis.pause();
-        window.speechSynthesis.resume();
+      // Keep speech synthesis active on long dialogues without interrupting
+      keepAlive = setInterval(() => {
+        try {
+          if (!window.speechSynthesis.speaking) {
+            clearInterval(keepAlive);
+            keepAlive = null;
+            return;
+          }
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        } catch {
+          clearInterval(keepAlive);
+          keepAlive = null;
+        }
       }, 10000);
     });
   },

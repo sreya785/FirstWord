@@ -2,7 +2,7 @@
 
 async function req(method, url, body, headers = {}) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 3500) : null;
+  const timeoutId = controller ? setTimeout(() => controller.abort(), 18000) : null;
   try {
     const res = await fetch(url, {
       method,

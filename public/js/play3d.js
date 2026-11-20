@@ -657,6 +657,11 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
         onBoundary: (item, charIndex) => { if (!S.destroyed) pullTyper(charIndex); },
         onEnd: () => finishTyper(),
       });
+      // Ensure browser speech synthesis has completely finished speaking before switching to listening
+      let safetyCount = 0;
+      while (window.speechSynthesis && window.speechSynthesis.speaking && safetyCount++ < 30) {
+        await sleep(100);
+      }
     } else {
       // no voice on this device (or sound is off): still let each line be "spoken" for as long as it
       // takes to read, so the character's mouth moves and the child can follow who is talking
@@ -673,8 +678,13 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
     if (lastPet) showLine(lastPet, { instant: true });
     setBubble3d('');
     S.speaking = false; setMicState(); sfx.duck(false);
+
+    // Quiet buffer (450ms) before mic starts so pet never hears residual audio
+    await sleep(450);
+    if (S.destroyed || token !== S.speakToken || S.speaking || S.busy || S.paused) return;
+
     if (S.voiceControlActive && speech.supported && !S.muted && !S.paused) {
-      setTimeout(startListening, 300);
+      startListening();
     } else if (S.autoListen && speech.supported && !S.muted && !S.paused) {
       startListening();
     }
@@ -979,7 +989,7 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
         if (!S.listening && S.voiceControlActive && !S.busy && !S.speaking && !S.paused && !S.destroyed) {
           startListening();
         }
-      }, 320);
+      }, 450);
     } else if (!on && !S.busy && !S.speaking) {
       armSilence();
     }
