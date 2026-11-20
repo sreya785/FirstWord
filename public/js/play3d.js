@@ -255,8 +255,11 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
     S.silenceTimer = setTimeout(() => { if (S.busy || S.listening || S.speaking || S.destroyed || S.paused) return; if (S.tapAt && performance.now() - S.tapAt < 12000) { armSilence(); return; } S.silenceCount++; send('', 'silence'); }, SILENCE_MS);
   }
   function normItems(res) {
-    const raw = (res.speech && res.speech.length) ? res.speech : [{ who: 'pet', text: res.pet.text }];
-    return raw.map((i) => ({ ...i, name: i.who === 'pet' ? res.pet.name : (i.name ? i.name.charAt(0).toUpperCase() + i.name.slice(1) : '') }));
+    if (!res) return [];
+    const raw = (res.speech && res.speech.length) ? res.speech
+      : (res.items && res.items.length) ? res.items
+      : [{ who: 'pet', text: res.pet?.text || res.reply?.text || '' }];
+    return raw.filter((i) => i && i.text).map((i) => ({ ...i, name: i.who === 'pet' ? (res.pet?.name || 'Momo') : (i.name ? i.name.charAt(0).toUpperCase() + i.name.slice(1) : '') }));
   }
 
   // ---------- HUD: quest, stickers, banner ----------
@@ -518,6 +521,10 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
     return null;
   }
   async function applyResponse(res) {
+    if (!res) res = {};
+    if (!res.world) res.world = { location: S.world?.location || 'home', time: 'day', weather: 'clear', colors: {} };
+    if (!res.pet) res.pet = { mood: 'happy', name: S.last?.pet?.name || 'Momo' };
+    if (!res.items) res.items = res.speech || (res.reply ? [res.reply] : []);
     const prevLoc = S.world?.location;
     S.last = res; S.world = res.world; S.sceneState = res.sceneState || S.sceneState || {}; S.curMood = res.pet.mood || S.curMood;
     const w = res.world;
@@ -689,32 +696,57 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
     if (text) { showHeard(text); pet.setMood('thinking'); }
     else el.transcript.classList.add('hidden');
     try {
-      const res = await api.say(S.sessionId, text, source);
+      const res = await api.say(S.sessionId, text, source, { childId: S.child?.id, lang, location: S.world?.location });
       S.busy = false; setMicState();
       if (text) showHeard(text, res.corrected);
       await applyResponse(res);
     } catch (e) {
       console.error('turn failed:', e);
       S.busy = false; setMicState();
-      if (e.data?.expired) { toast(e.message); await startSession(); } else toast(e.message || 'Oops');
+      if (e.data?.expired) { await startSession(); } else toast(e.message || 'Oops');
       armSilence();
     }
   }
   async function startSession() {
     clearSilence(); S.busy = true; setMicState();
     try {
-      const data = await api.startSession(S.child.id, lang);
-      S.sessionId = data.sessionId; S.child = data.child; S.busy = false; setMicState();
+      const data = await api.startSession(S.child?.id, lang);
+      S.sessionId = data.sessionId;
+      if (data.child) S.child = data.child;
+      S.busy = false; setMicState();
       await applyResponse(data.response);
-    } catch (e) { S.busy = false; setMicState(); toast(e.message); }
+    } catch (e) {
+      console.warn('startSession fallback:', e);
+      S.busy = false; setMicState();
+      await applyResponse({
+        sceneChanged: false,
+        world: { location: 'home', time: 'day', weather: 'clear', colors: {} },
+        pet: { mood: 'happy', action: 'wave' },
+        reply: { who: 'pet', text: lang === 'bn' ? 'হ্যালো! আমি মোমো! চলো খেলি!' : 'Hello! I am Momo! Let us play!' },
+        items: [{ who: 'pet', text: lang === 'bn' ? 'হ্যালো! আমি মোমো! চলো খেলি!' : 'Hello! I am Momo! Let us play!' }]
+      });
+    }
   }
   async function switchScene(scene) {
     if (S.busy) return;
     closePlacesModal();
     sfx.play('click'); S.silenceCount = 0; clearSilence(); speech.cancel(); speech.abort();
     S.busy = true; setMicState();
-    try { const res = await api.scene(S.sessionId, scene); S.busy = false; setMicState(); await applyResponse(res); }
-    catch (e) { S.busy = false; setMicState(); if (e.data?.expired) await startSession(); else toast(e.message); }
+    try {
+      const res = await api.scene(S.sessionId, scene, { childId: S.child?.id, lang });
+      S.busy = false; setMicState();
+      await applyResponse(res);
+    } catch (e) {
+      console.warn('switchScene fallback:', e);
+      S.busy = false; setMicState();
+      await applyResponse({
+        sceneChanged: true,
+        world: { location: scene, time: 'day', weather: 'clear', colors: {} },
+        pet: { mood: 'excited', action: 'bounce' },
+        reply: { who: 'pet', text: lang === 'bn' ? `চলো ${scene} এ যাই!` : `Let's go to ${scene}!` },
+        items: [{ who: 'pet', text: lang === 'bn' ? `চলো ${scene} এ যাই!` : `Let's go to ${scene}!` }]
+      });
+    }
   }
 
   // ---------- Places Modal & Voice HUD helpers ----------

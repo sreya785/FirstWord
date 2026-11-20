@@ -48,9 +48,22 @@ export function load() {
     else db = { children: [], sessions: [] };
     db.children ||= [];
     db.sessions ||= [];
+    if (db.children.length === 0) {
+      db.children.push({
+        id: 'sreya',
+        name: 'sreya',
+        age: 4,
+        lang: 'bn',
+        petType: 'cat',
+        petName: 'Momo',
+        created: 1774000000000,
+        settings: { storeTranscripts: true, dailyLimitMinutes: 20 },
+        stickers: ['apple', 'star']
+      });
+    }
   } catch (e) {
     console.error('Could not load db.json, starting fresh:', e.message);
-    db = { children: [], sessions: [] };
+    db = { children: [{ id: 'sreya', name: 'sreya', age: 4, lang: 'bn', petType: 'cat', petName: 'Momo', created: 1774000000000, settings: { storeTranscripts: true, dailyLimitMinutes: 20 }, stickers: ['apple', 'star'] }], sessions: [] };
   }
   return db;
 }

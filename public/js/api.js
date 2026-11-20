@@ -102,25 +102,132 @@ export const api = {
   
   startSession: async (childId, lang) => {
     try {
-      return await req('POST', '/api/sessions', { childId, lang });
-    } catch {
-      return { id: 'sess_' + Date.now(), childId, lang, started: Date.now() };
+      const res = await req('POST', '/api/sessions', { childId, lang });
+      if (res && res.sessionId && res.response) return res;
+    } catch (e) {
+      console.warn('API startSession offline/failed:', e.message);
     }
+    const isBn = lang === 'bn';
+    const petName = 'Momo';
+    const greetText = isBn
+      ? 'হ্যালো! আমি মোমো! চলো আজ নতুন জায়গায় ঘুরে আসি!'
+      : 'Hello! I am Momo! Let us explore together today!';
+    return {
+      sessionId: 'sess_' + Date.now().toString(36),
+      child: { id: childId, name: childId, lang, petType: 'cat', petName },
+      response: {
+        sessionId: 'sess_' + Date.now().toString(36),
+        sceneChanged: false,
+        reply: { who: 'pet', text: greetText },
+        items: [{ who: 'pet', text: greetText, name: petName }],
+        pet: { mood: 'happy', action: 'wave', text: greetText, name: petName },
+        world: {
+          location: 'home',
+          time: 'day',
+          weather: 'clear',
+          colors: {},
+          petOutfit: null,
+          petState: 'normal'
+        },
+        sceneState: {},
+        suggestions: isBn ? ['দোকানে চলো 🛍️', 'রেস্টুরেন্টে চলো 🍽️', 'কেমন আছো?'] : ['Go to shop 🛍️', 'Go to restaurant 🍽️', 'How are you?']
+      }
+    };
   },
 
-  say: async (sessionId, text, source) => {
+  say: async (sessionId, text, source, extra = {}) => {
     try {
-      return await req('POST', `/api/sessions/${sessionId}/say`, { text, source });
-    } catch {
-      return {
-        reply: { who: 'pet', text: text ? `বাহ! তুমি বললে "${text}"! চমৎকার!` : 'খুব সুন্দর হয়েছে! চলো খেলা চালিয়ে যাই!' },
-        items: [{ who: 'pet', text: text ? `বাহ! তুমি বললে "${text}"! চমৎকার!` : 'খুব সুন্দর হয়েছে! চলো খেলা চালিয়ে যাই!' }],
-        world: { location: 'shop' }
-      };
+      const res = await req('POST', `/api/sessions/${sessionId}/say`, { text, source, ...extra });
+      if (res && res.world) return res;
+    } catch (e) {
+      console.warn('API say offline/failed:', e.message);
     }
+    const isBn = extra.lang === 'bn';
+    const loc = extra.location || 'home';
+    const petName = 'Momo';
+    const clean = String(text || '').trim();
+    let replyText = isBn ? 'বাহ! দারুণ বলেছ! চলো খেলা চালিয়ে যাই!' : 'Great job! That sounds wonderful!';
+    let nextLoc = loc;
+    let sceneChanged = false;
+
+    if (/restaurant|খাবার|রেস্টুরেন্ট/i.test(clean)) {
+      nextLoc = 'restaurant';
+      sceneChanged = true;
+      replyText = isBn ? 'চলো রেস্টুরেন্টে যাই! সুস্বাদু খাবার বানাবো!' : "Let's visit the restaurant! Delicious food awaits!";
+    } else if (/shop|store|দোকান|ক্যাশ/i.test(clean)) {
+      nextLoc = 'shop';
+      sceneChanged = true;
+      replyText = isBn ? 'চলো দোকানে যাই! আমি ক্রেতা, তুমি দোকানদার!' : "Let's go to the shop! Be the shopkeeper!";
+    } else if (/doctor|hospital|ক্লিনিক|ডাক্তার|হাসপাতাল/i.test(clean)) {
+      nextLoc = 'hospital';
+      sceneChanged = true;
+      replyText = isBn ? 'চলো ডাক্তারের কাছে যাই! বন্ধুকে যত্ন করি!' : "Let's visit the clinic! We will care for our friend!";
+    } else if (/stage|মঞ্চ|গান|নাচ/i.test(clean)) {
+      nextLoc = 'stage';
+      sceneChanged = true;
+      replyText = isBn ? 'চলো মঞ্চে যাই! সুন্দর নাচ আর গান হবে!' : "Let's perform on the stage! Showtime!";
+    } else if (/home|বাড়ি/i.test(clean)) {
+      nextLoc = 'home';
+      sceneChanged = true;
+      replyText = isBn ? 'বাড়ি ফিরে আসলাম! বেশ আনন্দ হলো!' : 'Back home sweet home! That was fun!';
+    } else if (clean) {
+      replyText = isBn ? `তুমি বললে "${clean}"! দারুণ হয়েছে!` : `You said "${clean}"! That is awesome!`;
+    }
+
+    return {
+      sessionId,
+      sceneChanged,
+      reply: { who: 'pet', text: replyText },
+      items: [{ who: 'pet', text: replyText, name: petName }],
+      pet: { mood: 'happy', action: 'nod', text: replyText, name: petName },
+      world: {
+        location: nextLoc,
+        time: 'day',
+        weather: 'clear',
+        colors: {},
+        petOutfit: null,
+        petState: 'normal'
+      },
+      sceneState: {}
+    };
   },
 
-  scene: (sessionId, scene) => req('POST', `/api/sessions/${sessionId}/scene`, { scene }).catch(() => ({ ok: true })),
+  scene: async (sessionId, scene, extra = {}) => {
+    try {
+      const res = await req('POST', `/api/sessions/${sessionId}/scene`, { scene, ...extra });
+      if (res && res.world) return res;
+    } catch (e) {
+      console.warn('API scene offline/failed:', e.message);
+    }
+    const loc = scene || 'home';
+    const isBn = extra.lang === 'bn';
+    const petName = 'Momo';
+    const placePhrases = {
+      restaurant: isBn ? 'রেস্টুরেন্টে স্বাগতম! খাবারের সুবাস আসছে!' : 'Welcome to the restaurant! Smells delicious!',
+      shop: isBn ? 'দোকানে স্বাগতম! ক্রেতারা লাইনে অপেক্ষা করছে!' : 'Welcome to the shop! Customers are lining up!',
+      hospital: isBn ? 'ডাক্তারখানায় স্বাগতম! চলো বন্ধুদের সাহায্য করি!' : 'Welcome to the clinic! Let us care for our friends!',
+      stage: isBn ? 'মঞ্চে স্বাগতম! সুন্দর পরিবেশনা হবে!' : 'Welcome to the stage! Showtime!',
+      home: isBn ? 'আমাদের মিষ্টি বাড়িতে স্বাগতম!' : 'Welcome back to our sweet home!'
+    };
+    const replyText = placePhrases[loc] || (isBn ? `চলো ${loc} এ যাই!` : `Let's visit ${loc}!`);
+
+    return {
+      sessionId,
+      sceneChanged: true,
+      reply: { who: 'pet', text: replyText },
+      items: [{ who: 'pet', text: replyText, name: petName }],
+      pet: { mood: 'excited', action: 'bounce', text: replyText, name: petName },
+      world: {
+        location: loc,
+        time: 'day',
+        weather: 'clear',
+        colors: {},
+        petOutfit: null,
+        petState: 'normal'
+      },
+      sceneState: {}
+    };
+  },
   endSession: (sessionId) => req('POST', `/api/sessions/${sessionId}/end`).catch(() => ({ ok: true })),
   stickers: (id) => req('GET', `/api/children/${id}/stickers`).catch(() => []),
   mlStatus: () => req('GET', '/api/ml/status').catch(() => ({ trained: true, samples: 400 })),

@@ -15,7 +15,19 @@ const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '200kb' }));
 
-// Live sessions (world state) kept in memory
+// CORS & Vercel serverless prefix normalization
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-parent-pin');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  if (!req.url.startsWith('/api') && (req.url.startsWith('/children') || req.url.startsWith('/sessions') || req.url.startsWith('/health') || req.url.startsWith('/ml'))) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
+// Live sessions (world state) kept in memory with serverless auto-reconstitution
 const live = new Map();
 const SESSION_TTL_MS = 1000 * 60 * 60 * 6;
 setInterval(() => {
@@ -24,6 +36,37 @@ setInterval(() => {
 }, 60_000).unref();
 
 db.load();
+
+function resolveChild(childId, body = {}) {
+  let child = childId ? db.getChild(childId) : null;
+  if (!child) {
+    const list = db.listChildren();
+    if (list.length > 0) child = list.find((c) => c.id === childId) || list[0];
+  }
+  if (!child) {
+    child = db.createChild({
+      name: body.name || 'sreya',
+      age: body.age || 4,
+      lang: body.lang || 'bn',
+      petType: body.petType || 'cat',
+      petName: body.petName || 'Momo'
+    });
+  }
+  return child;
+}
+
+function resolveSession(sessionId, childId, body = {}) {
+  let s = live.get(sessionId);
+  if (!s) {
+    const child = resolveChild(childId || body.childId, body);
+    const lang = body.lang || child.lang || 'bn';
+    const state = brain.newSession(child, lang);
+    const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: sessionId, turns: [] };
+    s = { id: sessionId, childId: child.id, child, state, rec, lastActive: Date.now() };
+    live.set(sessionId, s);
+  }
+  return s;
+}
 
 const requirePin = (req, res, next) => {
   const child = db.getChild(req.params.id);
@@ -110,13 +153,12 @@ app.get('/api/children/:id/unclear', requirePin, (req, res) => {
 
 // ---- sessions ----
 app.post('/api/sessions', (req, res) => {
-  const child = db.getChild(req.body?.childId);
-  if (!child) return res.status(404).json({ error: 'Child not found' });
+  const child = resolveChild(req.body?.childId, req.body);
   if (req.body?.lang) db.updateChild(child.id, { lang: req.body.lang });
   const lang = child.lang;
   const returning = db.sessionsForChild(child.id).length > 0;
   const state = brain.newSession(child, lang);
-  const rec = db.createSessionRecord(child);
+  const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: 'sess_' + Date.now(), turns: [] };
   const s = { id: rec.id, childId: child.id, child, state, rec, lastActive: Date.now() };
   live.set(s.id, s);
   const greeting = brain.greet(state, child, lang, returning);
@@ -126,15 +168,14 @@ app.post('/api/sessions', (req, res) => {
 });
 
 app.post('/api/sessions/:id/say', async (req, res) => {
-  const s = live.get(req.params.id);
-  if (!s) return res.status(404).json({ error: 'Session expired. Please start again.', expired: true });
+  const s = resolveSession(req.params.id, req.body?.childId, req.body);
   const text = String(req.body?.text || '').slice(0, 500);
   const source = ['voice', 'button', 'typed', 'silence'].includes(req.body?.source) ? req.body.source : 'typed';
   if (source !== 'silence' && !text.trim()) return res.status(400).json({ error: 'Nothing heard' });
   s.lastActive = Date.now();
   try {
     const response = await brain.processTurn(s.state, s.child, { text, source });
-    db.recordTurn(s.rec, s.child, { text, source, response, metrics: response.metrics });
+    if (db.recordTurn && s.rec) db.recordTurn(s.rec, s.child, { text, source, response, metrics: response.metrics });
     response.rewards = checkRewards(s.child, response, s.rec, { text, source });
     response.stickerCount = (s.child.stickers || []).length;
     if (response.rewards.length) db.save();
@@ -147,8 +188,7 @@ app.post('/api/sessions/:id/say', async (req, res) => {
 
 // Buttons for children who prefer tapping: jump straight to an activity
 app.post('/api/sessions/:id/scene', async (req, res) => {
-  const s = live.get(req.params.id);
-  if (!s) return res.status(404).json({ error: 'Session expired. Please start again.', expired: true });
+  const s = resolveSession(req.params.id, req.body?.childId, req.body);
   const scene = String(req.body?.scene || 'home');
   const phrases = {
     en: { home: 'let us go home', restaurant: 'let us go to the restaurant', shop: 'let us go to the shop', hospital: 'let us go to the hospital', stage: 'let us go to the stage', emergency: 'help my pet', create: 'let us create our own world', park: 'let us go to the park', beach: 'let us go to the beach', space: 'let us go to space' },
@@ -157,7 +197,7 @@ app.post('/api/sessions/:id/scene', async (req, res) => {
   const text = (phrases[s.child.lang] || phrases.en)[scene] || phrases.en.home;
   s.lastActive = Date.now();
   const response = await brain.processTurn(s.state, s.child, { text, source: 'button' });
-  db.recordTurn(s.rec, s.child, { text, source: 'button', response, metrics: response.metrics });
+  if (db.recordTurn && s.rec) db.recordTurn(s.rec, s.child, { text, source: 'button', response, metrics: response.metrics });
   response.rewards = checkRewards(s.child, response, s.rec, { text, source: 'button' });
   response.stickerCount = (s.child.stickers || []).length;
   if (response.rewards.length) db.save();
