@@ -1,0 +1,9 @@
+# Dependencies
+**/node_modules/
+
+# Local databases and sensitive runtime data
+**/data/
+
+# Screenshots and temp outputs
+**/scripts/shots/
+.sudo_as_admin_successful
