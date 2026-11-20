@@ -1,0 +1,134 @@
+[
+  {
+    "id": "shop_bn_l1_01",
+    "scene": "shop",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["বল", "লাল", "খেলনা"],
+    "exampleSentences": ["লাল বল।", "খেলনা দাও।"],
+    "followUpQuestions": ["বলটা কি লাল?", "তুমি কি বল দিয়ে খেলবে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l1_02",
+    "scene": "shop",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["ব্যাগ", "বড়", "ধরো"],
+    "exampleSentences": ["বড় ব্যাগ।", "ব্যাগ ধরো।"],
+    "followUpQuestions": ["ব্যাগটা কি খুব ভারী?", "ব্যাগে কী আছে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l1_03",
+    "scene": "shop",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["টাকা", "পয়সা", "নাও"],
+    "exampleSentences": ["পয়সা নাও।", "চকচকে টাকা।"],
+    "followUpQuestions": ["পয়সার ঝনঝন শব্দ শুনেছ?", "টাকাটা কি চকচকে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l2_01",
+    "scene": "shop",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["দাম", "কত", "টাকা"],
+    "exampleSentences": ["দাম কত?", "দশ টাকা দাও।"],
+    "followUpQuestions": ["এই খেলনার দাম কত?", "দশ টাকা কি যথেষ্ট?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l2_02",
+    "scene": "shop",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["স্ক্যান", "শব্দ", "মেশিন"],
+    "exampleSentences": ["স্ক্যান করো।", "বিপ শব্দ হলো।"],
+    "followUpQuestions": ["স্ক্যান করার সময় শব্দ শুনেছ?", "এবার কোন জিনিসটা স্ক্যান করব?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l2_03",
+    "scene": "shop",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["পুতুল", "নরম", "কিনব"],
+    "exampleSentences": ["নরম পুতুল কিনব।", "পুতুলটি খুব সুন্দর।"],
+    "followUpQuestions": ["পুতুলটা কি খুব নরম?", "পুতুলটার নাম কী রাখবে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l3_01",
+    "scene": "shop",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["ক্রেতা", "কাউন্টার", "পছন্দ"],
+    "exampleSentences": ["আমাদের দোকানে নতুন ক্রেতা এসেছেন।", "ক্রেতা কোন রঙিন ঘুড়ি পছন্দ করেছেন?"],
+    "followUpQuestions": ["ক্রেতা দোকানে এসে কী খুঁজছেন?", "কাউন্টারের পেছনে দাঁড়াতে তোমার কেমন লাগছে?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l3_02",
+    "scene": "shop",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["তাক", "রঙিন", "সাজানো"],
+    "exampleSentences": ["দোকানের তাকে অনেক সুন্দর জিনিস সাজানো।", "সবচেয়ে ওপরের তাক থেকে লাল গাড়িটা নাও।"],
+    "followUpQuestions": ["তাকে কোন রঙের খেলনা সবচেয়ে সুন্দর লাগছে?", "তুমি কি ওপরের তাক ছুঁতে পারো?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l3_03",
+    "scene": "shop",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["ভাঙতি", "নোট", "রসিদ"],
+    "exampleSentences": ["এখানে আপনার বাকি ভাঙতি টাকা রইল।", "কাগজের নোটগুলো যত্ন করে গুনে নাও।"],
+    "followUpQuestions": ["ক্রেতা তোমাকে কয়টা নোট দিয়েছেন?", "টাকা নেওয়ার পর ধন্যবাদ জানিয়েছ কি?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l4_01",
+    "scene": "shop",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["দোকানদার", "সহায়তা", "দায়িত্ব"],
+    "exampleSentences": ["আমি এই দোকানের হাসিমুখের দায়িত্বশীল দোকানদার।", "ক্রেতাদের সঠিক জিনিস খুঁজে পেতে আমি সুন্দর সহায়তা করি।"],
+    "followUpQuestions": ["দোকানদার হয়ে কাজ করতে তোমার কেমন আনন্দ হয়?", "দোকানে ক্রেতা এলে তুমি কীভাবে তাদের স্বাগত জানাও?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l4_02",
+    "scene": "shop",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["ছাড়", "বন্ধুত্ব", "উপহার"],
+    "exampleSentences": ["আমরা প্রতিবেশীর জন্য কিছুটা দাম কমিয়ে ছাড় দিলাম।", "বন্ধুত্বের উপহার হিসেবে এই সুন্দর খেলনাটি তুলে দিলাম।"],
+    "followUpQuestions": ["ছাড় পেয়ে ক্রেতার মুখ কেন উজ্জ্বল হয়ে উঠল?", "এই উপহারটি পেয়ে বন্ধুর কেমন লাগবে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_bn_l4_03",
+    "scene": "shop",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["সংগ্রহ", "বিখ্যাত", "পরামর্শ"],
+    "exampleSentences": ["আমাদের দোকানে কাঠের খেলনার খুব চমৎকার সংগ্রহ আছে।", "আমি ক্রেতাকে কাঠের সুন্দর পাজলটি কেনার পরামর্শ দিলাম।"],
+    "followUpQuestions": ["কোন বিশেষ জিনিসটি তুমি অন্য বন্ধুদের কিনতে পরামর্শ দেবে?", "আমাদের দোকানের সংগ্রহ কোথা থেকে আনা হয়েছে?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "id": "hosp_en_l1_01",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["doctor", "help", "care"],
+    "exampleSentences": ["Doctor here.", "Help please."],
+    "followUpQuestions": ["Is the doctor kind?", "Who needs help today?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l1_02",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["tummy", "hurt", "ouch"],
+    "exampleSentences": ["Tummy hurts.", "Gentle touch."],
+    "followUpQuestions": ["Does your tummy hurt?", "Shall we rub it gently?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l1_03",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["rest", "bed", "sleep"],
+    "exampleSentences": ["Soft bed.", "Rest now."],
+    "followUpQuestions": ["Is the pillow soft?", "Can your pet take a little nap?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l2_01",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["sick", "better", "pet"],
+    "exampleSentences": ["My pet is sick.", "Feel better soon."],
+    "followUpQuestions": ["How long has your pet felt sick?", "What will make your pet feel better?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l2_02",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["bandage", "paw", "clean"],
+    "exampleSentences": ["Bandage on paw.", "All clean now."],
+    "followUpQuestions": ["Which paw has the little bandage?", "Does the bandage feel snug?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l2_03",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["medicine", "spoon", "drink"],
+    "exampleSentences": ["Sweet medicine.", "Take one sip."],
+    "followUpQuestions": ["Does the medicine taste like berries?", "Can you take a tiny sip?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l3_01",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["stethoscope", "heartbeat", "listen"],
+    "exampleSentences": ["The doctor listens with a stethoscope.", "I hear a gentle heartbeat thumping."],
+    "followUpQuestions": ["What sound did the stethoscope make?", "Is the doctor ready to tell us good news?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l3_02",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["temperature", "forehead", "cool"],
+    "exampleSentences": ["Her forehead feels a little warm.", "A cool cloth will bring down the temperature."],
+    "followUpQuestions": ["Does the cool cloth feel refreshing?", "Is your patient smiling again?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l3_03",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["brave", "checkup", "healthy"],
+    "exampleSentences": ["You were very brave during the checkup.", "Soon your friend will be fully healthy."],
+    "followUpQuestions": ["What helped your friend stay so brave?", "What fun game will you play once healthy?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l4_01",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["symptoms", "explain", "carefully"],
+    "exampleSentences": ["I explained all the symptoms carefully to Dr. Mitu.", "We noticed the sore throat started yesterday morning."],
+    "followUpQuestions": ["How did explaining the symptoms help the doctor understand?", "What advice did the doctor give you?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l4_02",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["comfort", "reassure", "companion"],
+    "exampleSentences": ["I stayed close to comfort my little companion.", "I reassured my pet that everything would be alright."],
+    "followUpQuestions": ["What kind words did you say to reassure your pet?", "How did your companion show relief?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_en_l4_03",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["recovery", "strength", "celebrate"],
+    "exampleSentences": ["After some rest and soup, full strength returned.", "We will celebrate a speedy recovery with a park visit."],
+    "followUpQuestions": ["What healthy food helped restore full strength?", "What did you learn about caring for others?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

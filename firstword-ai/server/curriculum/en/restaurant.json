@@ -1,0 +1,134 @@
+[
+  {
+    "id": "rest_en_l1_01",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["rice", "warm", "eat"],
+    "exampleSentences": ["Rice please.", "Warm rice."],
+    "followUpQuestions": ["Is the rice warm?", "Do you like rice?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l1_02",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["juice", "cold", "cup"],
+    "exampleSentences": ["Cold juice.", "Big cup."],
+    "followUpQuestions": ["Is the juice sweet?", "What color is your cup?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l1_03",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["noodles", "yum", "more"],
+    "exampleSentences": ["Noodles yum.", "More please."],
+    "followUpQuestions": ["Are the noodles long?", "Do you want more?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l2_01",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["chicken", "rice", "plate"],
+    "exampleSentences": ["Chicken and rice please.", "On my plate."],
+    "followUpQuestions": ["What kind of chicken do you like?", "Is it on a big plate?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l2_02",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["water", "please", "thirsty"],
+    "exampleSentences": ["Water please.", "I am thirsty."],
+    "followUpQuestions": ["Would you like cold water?", "Do you want ice in it?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l2_03",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["spoon", "fork", "table"],
+    "exampleSentences": ["Little spoon please.", "On the table."],
+    "followUpQuestions": ["Can you see the yellow fork?", "Where is your spoon?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l3_01",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["order", "menu", "delicious"],
+    "exampleSentences": ["I would like to order pasta.", "This menu has delicious food."],
+    "followUpQuestions": ["What is your favorite dish on the menu?", "Does the pasta smell delicious?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l3_02",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["window", "table", "chair"],
+    "exampleSentences": ["Can we sit by the window?", "There is a sunny table."],
+    "followUpQuestions": ["What can you see outside the window?", "Is that a comfy chair?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l3_03",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["dessert", "sweet", "share"],
+    "exampleSentences": ["Let us share sweet ice cream.", "Can we order dessert now?"],
+    "followUpQuestions": ["Which sweet flavor shall we share?", "Do you want sprinkles on top?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l4_01",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["compliment", "chef", "favorite"],
+    "exampleSentences": ["Chef Rafi made my favorite soup today.", "I want to give the chef a big compliment."],
+    "followUpQuestions": ["Why is that your favorite soup in the whole restaurant?", "What secret ingredient did the chef use?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l4_02",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["celebrate", "special", "together"],
+    "exampleSentences": ["We came here together for a special meal.", "Let us celebrate our fun adventure."],
+    "followUpQuestions": ["What made this meal feel so special today?", "Who would you invite next time?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_en_l4_03",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["polite", "waiter", "bill"],
+    "exampleSentences": ["We asked the polite waiter for the bill.", "Thank you very much for our lunch."],
+    "followUpQuestions": ["How did you show the waiter you were polite?", "What was the tastiest part of lunch?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

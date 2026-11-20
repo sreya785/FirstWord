@@ -1,0 +1,134 @@
+[
+  {
+    "id": "home_bn_l1_01",
+    "scene": "home",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["বিড়াল", "বন্ধু", "জড়িয়ে"],
+    "exampleSentences": ["আমার বিড়াল।", "জড়িয়ে ধরো।"],
+    "followUpQuestions": ["বিড়ালটা কি খুব নরম?", "তুমিও কি বন্ধুকে আদর করবে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l1_02",
+    "scene": "home",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["ঘর", "নীল", "রোদ"],
+    "exampleSentences": ["নীল ঘর।", "মিষ্টি রোদ।"],
+    "followUpQuestions": ["নীল ঘর কি তোমার পছন্দ?", "বাইরে কি সুন্দর রোদ উঠেছে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l1_03",
+    "scene": "home",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["খেলা", "বল", "এখন"],
+    "exampleSentences": ["এখন খেলব।", "বল ঘোরাও।"],
+    "followUpQuestions": ["চলো আমরা বল গড়িয়ে খেলি?", "তুমি কি খেলতে তৈরি?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l2_01",
+    "scene": "home",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["গোছানো", "খেলনা", "পরিচ্ছন্ন"],
+    "exampleSentences": ["খেলনা গুছিয়ে রাখো।", "ঘরটি পরিষ্কার করো।"],
+    "followUpQuestions": ["খেলার ব্লকগুলো কোন বাক্সে রাখবে?", "ঘর গোছানোর পর কেমন সুন্দর লাগছে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l2_02",
+    "scene": "home",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["নাস্তা", "আপেল", "মুচমুচে"],
+    "exampleSentences": ["লাল আপেল খাব।", "নাস্তার সময় হয়েছে।"],
+    "followUpQuestions": ["আপেল কি মিষ্টি আর মুচমুচে?", "একটু পানিও খাবে কি?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l2_03",
+    "scene": "home",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["জানালা", "বৃষ্টি", "ফোটা"],
+    "exampleSentences": ["জানালায় বৃষ্টির শব্দ।", "বাইরে তাকাও এখনই।"],
+    "followUpQuestions": ["বৃষ্টির টুপটাপ শব্দ শুনেছ?", "বৃষ্টি থামলে কাগজের নৌকা ভাসাবে কি?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l3_01",
+    "scene": "home",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["কম্বল", "আরাম", "ঘুম"],
+    "exampleSentences": ["চলো আমরা নরম কম্বলের নিচে বসি।", "ছোট বন্ধুদের এখন ঘুমের সময় হয়েছে।"],
+    "followUpQuestions": ["কম্বলটা কি খুব আরামদায়ক আর উষ্ণ?", "ঘুমের আগে একটা ছোট গল্প শুনবে কি?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l3_02",
+    "scene": "home",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["বাগান", "ফুল", "পানি"],
+    "exampleSentences": ["আমরা বাগানের বেগুনি ফুলে পানি দিতে পারি।", "দেখো সবুজ সূর্যমুখী গাছটা কত বড় হয়েছে।"],
+    "followUpQuestions": ["বাগানের কোন ফুল থেকে সবচেয়ে মিষ্টি গন্ধ আসে?", "গাছে কি ঠিকমতো পানি দিয়েছ?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l3_03",
+    "scene": "home",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["রান্নাঘর", "বিস্কুট", "সুগন্ধ"],
+    "exampleSentences": ["আমরা রান্নাঘরে গরম বিস্কুট তৈরি করছি।", "মিষ্টি সুগন্ধে পুরো বাড়িটা ভরে গেল।"],
+    "followUpQuestions": ["বিস্কুটগুলো কোন আকারের কেটেছ?", "সবচেয়ে প্রথম গরম বিস্কুটটা কে খাবে?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l4_01",
+    "scene": "home",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["আরামদায়ক", "শান্তি", "পাঠাগার"],
+    "exampleSentences": ["আমাদের ঘরের আরামদায়ক কোণটি বই পড়ার সেরা জায়গা।", "আমরা অনেকগুলো বালিশ দিয়ে একসাথে বই পড়ার ঘর বানালাম।"],
+    "followUpQuestions": ["ঘরের কোন কোণটি তোমার সবচেয়ে বেশি ভালো লাগে?", "বই পড়ার জন্য কয়টা বালিশ কাজে লাগিয়েছ?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l4_02",
+    "scene": "home",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["সকাল", "সূর্যালোক", "নিয়ম"],
+    "exampleSentences": ["সকালের সোনালি সূর্যালোক জানালার পর্দা দিয়ে ঘরে এলো।", "সুন্দর নিয়ম মেনে দিন শুরু করলে আমাদের মন খুব প্রফুল্ল থাকে।"],
+    "followUpQuestions": ["সকালে রোদ উঠলে তুমি সবার আগে কী করতে ভালোবাসো?", "পোষা বন্ধুকে তুমি কীভাবে সকালে হাসিমুখে জাগাও?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_bn_l4_03",
+    "scene": "home",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["পরিবার", "ঐতিহ্য", "স্মৃতি"],
+    "exampleSentences": ["সন্ধ্যায় পরিবারের সবাই একসাথে বসে গল্প করা আমাদের প্রিয় ঐতিহ্য।", "ঘুমানোর আগে আমরা আজকের দিনের সবচেয়ে সুন্দর স্মৃতিগুলো মনে করলাম।"],
+    "followUpQuestions": ["আজকের সারাদিনের সেরা আনন্দময় স্মৃতি কোনটি ছিল?", "কোন মধুর চিন্তা মনে করে তুমি সুন্দর ঘুমের দেশে যাবে?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

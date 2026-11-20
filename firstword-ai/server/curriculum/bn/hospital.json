@@ -1,0 +1,134 @@
+[
+  {
+    "id": "hosp_bn_l1_01",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["ডাক্তার", "সাহায্য", "সেবা"],
+    "exampleSentences": ["ডাক্তার এসেছেন।", "সাহায্য করুন।"],
+    "followUpQuestions": ["ডাক্তার কি ভালো?", "আজ কার সাহায্য দরকার?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l1_02",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["পেট", "ব্যথা", "ইশ"],
+    "exampleSentences": ["পেটে ব্যথা।", "আস্তে ধরো।"],
+    "followUpQuestions": ["পেটে কি খুব ব্যথা?", "হাত বুলিয়ে দেব কি?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l1_03",
+    "scene": "hospital",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["বিশ্রাম", "বিছানা", "ঘুম"],
+    "exampleSentences": ["নরম বিছানা।", "একটু ঘুমাও।"],
+    "followUpQuestions": ["বালিশটা কি নরম?", "বন্ধু কি একটু ঘুমাবে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l2_01",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["অসুস্থ", "ভালো", "বন্ধু"],
+    "exampleSentences": ["আমার বন্ধু অসুস্থ।", "তাড়াতাড়ি ভালো হও।"],
+    "followUpQuestions": ["বন্ধু কখন থেকে অসুস্থ?", "কী খেলে বন্ধু ভালো হবে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l2_02",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["ব্যান্ডেজ", "পা", "পরিষ্কার"],
+    "exampleSentences": ["পায়ে ব্যান্ডেজ লাগাও।", "এখন সব পরিষ্কার।"],
+    "followUpQuestions": ["কোন পায়ে ছোট ব্যান্ডেজ আছে?", "ব্যান্ডেজ লাগাতে ব্যথা লেগেছে কি?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l2_03",
+    "scene": "hospital",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["ওষুধ", "চামচ", "খাও"],
+    "exampleSentences": ["মিষ্টি ওষুধ।", "এক চামচ খাও।"],
+    "followUpQuestions": ["ওষুধের স্বাদ কি ফলের মতো মিষ্টি?", "তুমি কি এক চুমুক ওষুধ খাবে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l3_01",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["স্টেথোস্কোপ", "হৃদস্পন্দন", "শোনা"],
+    "exampleSentences": ["ডাক্তার স্টেথোস্কোপ দিয়ে পরীক্ষা করছেন।", "ধুকপুক হৃদস্পন্দনের শব্দ শোনা গেল।"],
+    "followUpQuestions": ["স্টেথোস্কোপে কেমন শব্দ শুনলে?", "ডাক্তার কি ভালো খবর দিয়েছেন?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l3_02",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["তাপমাত্রা", "কপাল", "ঠান্ডা"],
+    "exampleSentences": ["কপালে হাত দিয়ে দেখলাম একটু গরম লাগছে।", "ঠান্ডা পানি দিয়ে কপাল মুছে দিলে তাপমাত্রা কমবে।"],
+    "followUpQuestions": ["ঠান্ডা জলপট্টি দিলে কি আরাম লাগছে?", "বন্ধুর মুখে কি হাসি ফিরে এসেছে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l3_03",
+    "scene": "hospital",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["সাহসী", "পরীক্ষা", "সুস্থ"],
+    "exampleSentences": ["ডাক্তারের পরীক্ষার সময় তুমি খুব সাহসী ছিলে।", "খুব দ্রুত তোমার বন্ধু সুস্থ হয়ে উঠবে।"],
+    "followUpQuestions": ["সাহসী হতে তোমাকে কে সাহস দিল?", "সুস্থ হলে আমরা কী খেলব?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l4_01",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["লক্ষণ", "বর্ণনা", "মনোযোগ"],
+    "exampleSentences": ["আমি ডাক্তার মিতুকে বন্ধুর সব লক্ষণ মনোযোগ দিয়ে বললাম।", "গতকাল সকাল থেকেই গলায় একটু খুসখুস কাশি হচ্ছিল।"],
+    "followUpQuestions": ["লক্ষণগুলো সুন্দর করে বলায় ডাক্তারের কীভাবে সুবিধা হলো?", "ডাক্তার আমাদের কী যত্ন নেওয়ার পরামর্শ দিলেন?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l4_02",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["আশ্বাস", "সান্ত্বনা", "সঙ্গী"],
+    "exampleSentences": ["আমি আমার প্রিয় সঙ্গীর পাশে বসে তাকে সান্ত্বনা দিলাম।", "আমি তাকে মিষ্টি আশ্বাস দিলাম যে সব ঠিক হয়ে যাবে।"],
+    "followUpQuestions": ["বন্ধু ভয় পেলে তুমি কীভাবে তাকে সান্ত্বনা দাও?", "তোমার আশ্বাস শুনে বন্ধু কতটা নিশ্চিন্ত হলো?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "hosp_bn_l4_03",
+    "scene": "hospital",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["সুস্থতা", "শক্তি", "যত্ন"],
+    "exampleSentences": ["পর্যাপ্ত বিশ্রাম আর পুষ্টিকর খাবার খেয়ে বন্ধু নতুন শক্তি পেল।", "আমরা ভালোবাসা আর যত্ন দিয়ে অসুস্থ রোগীকে সুস্থ করে তুললাম।"],
+    "followUpQuestions": ["কী খেলে শরীরে সবচেয়ে বেশি পুষ্টি আর শক্তি পাওয়া যায়?", "অন্যের যত্ন নেওয়া কেন এত ভালো কাজ?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

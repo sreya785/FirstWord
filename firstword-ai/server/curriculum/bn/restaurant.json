@@ -1,0 +1,134 @@
+[
+  {
+    "id": "rest_bn_l1_01",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["ভাত", "পানি", "গরম"],
+    "exampleSentences": ["ভাত খাব।", "পানি দাও।"],
+    "followUpQuestions": ["ভাত কি গরম?", "তুমি কি পানি খাবে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l1_02",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["জুস", "মিষ্টি", "গ্লাস"],
+    "exampleSentences": ["মিষ্টি জুস।", "লাল গ্লাস।"],
+    "followUpQuestions": ["জুস কি মিষ্টি?", "গ্লাসটা কি ভারী?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l1_03",
+    "scene": "restaurant",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["নুডলস", "মজা", "আরো"],
+    "exampleSentences": ["নুডলস খাব।", "আরো দাও।"],
+    "followUpQuestions": ["নুডলস কি অনেক মজা?", "তুমি কি আরো নেবে?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l2_01",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["মুরগি", "ভাত", "থালা"],
+    "exampleSentences": ["মুরগি আর ভাত খাব।", "থালায় খাবার দাও।"],
+    "followUpQuestions": ["মুরগি খেতে কেমন লাগে?", "থালা কি পরিষ্কার?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l2_02",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["ঠান্ডা", "শরবত", "তৃষ্ণা"],
+    "exampleSentences": ["ঠান্ডা শরবত চাই।", "খুব তৃষ্ণা পেয়েছে।"],
+    "followUpQuestions": ["শরবত কি খুব ঠান্ডা?", "একটু লেবুর শরবত দেব?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l2_03",
+    "scene": "restaurant",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["চামচ", "টেবিল", "পরিষ্কার"],
+    "exampleSentences": ["ছোট চামচ দাও।", "টেবিলে বসে খাব।"],
+    "followUpQuestions": ["তোমার চামচ কোথায়?", "টেবিলটা কি সুন্দর?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l3_01",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["অর্ডার", "মেনু", "সুস্বাদু"],
+    "exampleSentences": ["আমি সুস্বাদু খিচুড়ি অর্ডার করতে চাই।", "এই মেনুতে অনেক ভালো খাবার আছে।"],
+    "followUpQuestions": ["মেনু থেকে কোন খাবারটা তোমার সবচেয়ে পছন্দ?", "খিচুড়ি কি তোমার প্রিয়?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l3_02",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["জানালা", "চেয়ার", "আলো"],
+    "exampleSentences": ["আমরা কি জানালার পাশের টেবিলে বসতে পারি?", "এখানে সুন্দর রোদ আর বাতাস আসে।"],
+    "followUpQuestions": ["জানালা দিয়ে বাইরে কী দেখতে পাচ্ছ?", "চেয়ারটা কি আরামদায়ক?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l3_03",
+    "scene": "restaurant",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["আইসক্রিম", "মিষ্টি", "ভাগ"],
+    "exampleSentences": ["চলো আমরা মিষ্টি আইসক্রিম ভাগ করে খাই।", "খাবারের শেষে একটা মিষ্টি খাবার খাব।"],
+    "followUpQuestions": ["কোন স্বাদের আইসক্রিম তোমার সবচেয়ে প্রিয়?", "আমরা কি একসাথে ভাগ করে খাব?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l4_01",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["শেফ", "প্রশংসা", "রান্না"],
+    "exampleSentences": ["শেফ রাফি আজ আমাদের জন্য চমৎকার রান্না করেছেন।", "আমি শেফকে অনেক ধন্যবাদ আর প্রশংসা জানিয়েছি।"],
+    "followUpQuestions": ["শেফের রান্না তোমার কাছে কেমন লেগেছে?", "শেফকে তুমি নিজে গিয়ে ধন্যবাদ দেবে কি?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l4_02",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["আনন্দ", "একসাথে", "উৎসব"],
+    "exampleSentences": ["সবাই একসাথে বসে আনন্দ করে খাওয়া দাওয়া করলাম।", "আজকের দিনটা আমাদের জন্য একটা উৎসবের মতো আনন্দময় ছিল।"],
+    "followUpQuestions": ["একসাথে খেতে বসে তোমার কেমন আনন্দ হলো?", "পরের বার কাকে সাথে নিয়ে আসবে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "rest_bn_l4_03",
+    "scene": "restaurant",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["ভদ্রতা", "বিল", "কৃতজ্ঞ"],
+    "exampleSentences": ["আমরা খুব ভদ্রভাবে খাবারের বিল চাইলাম।", "সুন্দর সেবার জন্য আমরা সকলের প্রতি কৃতজ্ঞতা জানালাম।"],
+    "followUpQuestions": ["কীভাবে সুন্দরভাবে ধন্যবাদ দিতে হয় মনে আছে?", "খাবারের সবচেয়ে মজার অংশ কোনটা ছিল?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

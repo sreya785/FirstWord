@@ -1,0 +1,134 @@
+[
+  {
+    "id": "shop_en_l1_01",
+    "scene": "shop",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["ball", "red", "toy"],
+    "exampleSentences": ["Red ball.", "Toy please."],
+    "followUpQuestions": ["Is the ball red or blue?", "Does it bounce high?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l1_02",
+    "scene": "shop",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["bag", "big", "hold"],
+    "exampleSentences": ["Big bag.", "Hold this."],
+    "followUpQuestions": ["Can you hold the bag?", "What is inside the bag?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l1_03",
+    "scene": "shop",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["money", "coin", "take"],
+    "exampleSentences": ["Shiny coin.", "Take money."],
+    "followUpQuestions": ["Do you hear the coin jingle?", "Is the coin shiny?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l2_01",
+    "scene": "shop",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["price", "cost", "taka"],
+    "exampleSentences": ["How much is it?", "Ten taka please."],
+    "followUpQuestions": ["How much does the teddy cost?", "Is ten taka enough?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l2_02",
+    "scene": "shop",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["scan", "scanner", "beep"],
+    "exampleSentences": ["Scan the item.", "Hear the beep!"],
+    "followUpQuestions": ["Did the scanner make a loud beep?", "What shall we scan next?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l2_03",
+    "scene": "shop",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["teddy", "bear", "cuddly"],
+    "exampleSentences": ["A cuddly bear.", "Buy this teddy."],
+    "followUpQuestions": ["Is the teddy soft to touch?", "What name shall we give it?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l3_01",
+    "scene": "shop",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["customer", "counter", "choose"],
+    "exampleSentences": ["A new customer is at our counter.", "Which kite will they choose?"],
+    "followUpQuestions": ["What item did the customer choose today?", "Are you standing proudly behind the counter?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l3_02",
+    "scene": "shop",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["shelf", "display", "colorful"],
+    "exampleSentences": ["The colorful toys are on the top shelf.", "Let us arrange the shop display."],
+    "followUpQuestions": ["Which colorful toy catches your eye?", "Can you reach the top shelf?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l3_03",
+    "scene": "shop",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["change", "notes", "receipt"],
+    "exampleSentences": ["Here is your cash change.", "Take the paper notes carefully."],
+    "followUpQuestions": ["How many notes did the customer hand you?", "Did you say thank you for the visit?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l4_01",
+    "scene": "shop",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["shopkeeper", "inventory", "helpful"],
+    "exampleSentences": ["I am the helpful shopkeeper who runs the store.", "We checked our inventory for the best gifts."],
+    "followUpQuestions": ["Why do you like being such a helpful shopkeeper?", "What makes customers smile when they enter?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l4_02",
+    "scene": "shop",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["bargain", "discount", "friendly"],
+    "exampleSentences": ["We gave a friendly discount to our happy neighbor.", "It was a fun bargain on both sides."],
+    "followUpQuestions": ["How did you decide on that friendly price?", "What will your customer make with that item?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "shop_en_l4_03",
+    "scene": "shop",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["collection", "treasure", "recommend"],
+    "exampleSentences": ["I recommend this bright wooden puzzle.", "Our shop has the most wonderful treasure collection."],
+    "followUpQuestions": ["Which special item would you recommend to a friend?", "Where did our shop find this treasure?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

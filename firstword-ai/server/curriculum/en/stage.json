@@ -1,0 +1,134 @@
+[
+  {
+    "id": "stage_en_l1_01",
+    "scene": "stage",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["song", "sing", "tune"],
+    "exampleSentences": ["Sing song.", "Happy tune."],
+    "followUpQuestions": ["Do you want to sing?", "Is the song fast or slow?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l1_02",
+    "scene": "stage",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["clap", "cheer", "hands"],
+    "exampleSentences": ["Clap hands.", "Big cheer!"],
+    "followUpQuestions": ["Can everyone clap hands?", "Did you hear the audience cheer?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l1_03",
+    "scene": "stage",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["star", "light", "shine"],
+    "exampleSentences": ["Bright star.", "Shine light."],
+    "followUpQuestions": ["Is the spotlight shining on you?", "Are you the shining star?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l2_01",
+    "scene": "stage",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["story", "tell", "listen"],
+    "exampleSentences": ["Tell a story.", "Please listen everyone."],
+    "followUpQuestions": ["What is your story about?", "Who is the main hero in the tale?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l2_02",
+    "scene": "stage",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["bow", "curtain", "smile"],
+    "exampleSentences": ["Take a bow.", "Red curtain opens."],
+    "followUpQuestions": ["Can you give a polite little bow?", "Are you smiling at the crowd?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l2_03",
+    "scene": "stage",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["dance", "spin", "jump"],
+    "exampleSentences": ["Dance with me.", "Spin around once."],
+    "followUpQuestions": ["Can you jump high on the stage?", "Which dance move do you like best?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l3_01",
+    "scene": "stage",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["costume", "character", "perform"],
+    "exampleSentences": ["I am wearing a shiny superhero costume.", "Let us perform together for the audience."],
+    "followUpQuestions": ["Which character are you playing on stage?", "What special powers does your costume have?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l3_02",
+    "scene": "stage",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["spotlight", "applause", "proud"],
+    "exampleSentences": ["The golden spotlight followed every step.", "A wave of applause made me feel proud."],
+    "followUpQuestions": ["How did it feel when the spotlight turned on?", "Did the applause make your heart flutter?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l3_03",
+    "scene": "stage",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["introduce", "friend", "welcome"],
+    "exampleSentences": ["Let me introduce my furry best friend.", "Welcome to our magical afternoon concert."],
+    "followUpQuestions": ["What special trick did your furry friend show?", "Who in the front row waved back at you?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l4_01",
+    "scene": "stage",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["imagination", "narrator", "adventure"],
+    "exampleSentences": ["As the narrator, I took everyone on a grand adventure.", "Our shared imagination turned the wooden stage into a castle."],
+    "followUpQuestions": ["How did your voice change when the dragon arrived in your adventure?", "What was the most exciting chapter in your tale?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l4_02",
+    "scene": "stage",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["confidence", "express", "inspiring"],
+    "exampleSentences": ["Speaking with confidence helped everyone enjoy the show.", "It was inspiring to express our feelings through song."],
+    "followUpQuestions": ["What helped you feel so confident standing before the crowd?", "What message did your song give to the audience?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_en_l4_03",
+    "scene": "stage",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["ovation", "finale", "memorable"],
+    "exampleSentences": ["The audience rose for a standing ovation after the finale.", "It was truly a memorable show we will cherish forever."],
+    "followUpQuestions": ["What surprise finale made everyone gasp in delight?", "What will your next stage production be about?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

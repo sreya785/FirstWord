@@ -1,0 +1,134 @@
+[
+  {
+    "id": "stage_bn_l1_01",
+    "scene": "stage",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["গান", "গাও", "সুর"],
+    "exampleSentences": ["গান গাও।", "মিষ্টি সুর।"],
+    "followUpQuestions": ["তুমি কি গান গাইবে?", "গানটির সুর কি সুন্দর?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l1_02",
+    "scene": "stage",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["হাততালি", "সবাই", "হাত"],
+    "exampleSentences": ["হাততালি দাও।", "সবাই খুশি।"],
+    "followUpQuestions": ["সবাই কি হাততালি দিচ্ছে?", "হাততালির শব্দ শুনতে পেয়েছ?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l1_03",
+    "scene": "stage",
+    "level": 1,
+    "lang": "bn",
+    "targetWords": ["আলো", "মঞ্চ", "তারা"],
+    "exampleSentences": ["উজ্জ্বল আলো।", "মঞ্চের তারা।"],
+    "followUpQuestions": ["মঞ্চের আলো কি তোমার ওপরে পড়েছে?", "তুমি কি উজ্জ্বল তারা?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l2_01",
+    "scene": "stage",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["গল্প", "বলো", "শুনব"],
+    "exampleSentences": ["একটা গল্প বলো।", "মন দিয়ে শুনব।"],
+    "followUpQuestions": ["গল্পটা কী নিয়ে বলবে?", "গল্পের প্রধান চরিত্র কে?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l2_02",
+    "scene": "stage",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["পর্দা", "সালাম", "হাসি"],
+    "exampleSentences": ["লাল পর্দা খুলল।", "সবাইকে সালাম দাও।"],
+    "followUpQuestions": ["মঞ্চে দাঁড়িয়ে কি হাসি দিচ্ছ?", "পর্দা খোলার পর কেমন লাগল?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l2_03",
+    "scene": "stage",
+    "level": 2,
+    "lang": "bn",
+    "targetWords": ["নাচ", "ঘোরো", "লাফ"],
+    "exampleSentences": ["আমার সাথে নাচো।", "একবার ঘুরে দাঁড়াও।"],
+    "followUpQuestions": ["তুমি কি উঁচু লাফ দিতে পারো?", "কোন নাচের ভঙ্গি তোমার পছন্দ?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l3_01",
+    "scene": "stage",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["পোশাক", "অভিনয়", "উপস্থাপন"],
+    "exampleSentences": ["আমি রূপকথার রাজার উজ্জ্বল পোশাক পরেছি।", "চলো আমরা দর্শকদের সামনে সুন্দর অভিনয় করি।"],
+    "followUpQuestions": ["মঞ্চে তুমি কার অভিনয়ে অংশ নিয়েছ?", "পোশাকের পেছনে কি কোনো ডানা বা মুকুট আছে?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l3_02",
+    "scene": "stage",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["স্পটলাইট", "করতালি", "গর্ব"],
+    "exampleSentences": ["সোনালি স্পটলাইটের আলো পুরো মঞ্চকে রাঙিয়ে দিল।", "দর্শকদের তুমুল করতালি শুনে আমার খুব গর্ব হলো।"],
+    "followUpQuestions": ["আলোর নিচে দাঁড়াতে তোমার কেমন লাগল?", "করতালি শুনে মন কেমন ভরে উঠল?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l3_03",
+    "scene": "stage",
+    "level": 3,
+    "lang": "bn",
+    "targetWords": ["পরিচয়", "বন্ধু", "স্বাগত"],
+    "exampleSentences": ["আমি সবাইকে আমার মিষ্টি বন্ধুর সাথে পরিচয় করিয়ে দেব।", "আমাদের আনন্দের আসরে সবাইকে স্বাগত জানাচ্ছি।"],
+    "followUpQuestions": ["তোমার বন্ধু মঞ্চে কী জাদু দেখাল?", "সামনের সারির দর্শকরা হাত নেড়ে কী বলল?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l4_01",
+    "scene": "stage",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["কল্পনা", "গল্পকার", "অভিযান"],
+    "exampleSentences": ["মঞ্চের গল্পকার হয়ে আমি সবাইকে এক রূপকথার অভিযানে নিয়ে গেলাম।", "আমাদের মনের কল্পনায় কাঠের মঞ্চটি একটা সোনালি প্রাসাদে পরিণত হলো।"],
+    "followUpQuestions": ["ড্রাগনের গল্প বলার সময় তুমি কীভাবে কণ্ঠস্বর বদলেছিলে?", "গল্পের সবচেয়ে রোমাঞ্চকর ঘটনাটি কী ছিল?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l4_02",
+    "scene": "stage",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["আত্মবিশ্বাস", "অনুপ্রেরণা", "অনুভূতি"],
+    "exampleSentences": ["দৃঢ় আত্মবিশ্বাস নিয়ে কথা বললে সবাই খুব আনন্দ পায়।", "গানের মাধ্যমে নিজের মিষ্টি অনুভূতি প্রকাশ করা অনেক প্রেরণা জোগায়।"],
+    "followUpQuestions": ["দর্শকদের সামনে আত্মবিশ্বাসী থাকতে কী সাহায্য করেছিল?", "তোমার গান শুনে বন্ধুরা কী অনুভূতি জানাল?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "stage_bn_l4_03",
+    "scene": "stage",
+    "level": 4,
+    "lang": "bn",
+    "targetWords": ["সমাপ্তি", "স্মরণীয়", "অভিনন্দন"],
+    "exampleSentences": ["অনুষ্ঠানের চমৎকার সমাপ্তিতে দর্শকরা দাঁড়িয়ে অভিনন্দন জানাল।", "আজকের এই স্মরণীয় পরিবেশনা আমাদের চিরকাল মনে থাকবে।"],
+    "followUpQuestions": ["সমাপ্তির চমক দেখে দর্শকরা কেন আনন্দধ্বনি করল?", "পরের অনুষ্ঠানে তুমি কী নিয়ে নাটক সাজাবে?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]

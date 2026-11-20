@@ -1,0 +1,134 @@
+[
+  {
+    "id": "home_en_l1_01",
+    "scene": "home",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["cat", "pet", "hug"],
+    "exampleSentences": ["My pet.", "Warm hug."],
+    "followUpQuestions": ["Is your pet fluffy?", "Do you want to give a warm hug?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l1_02",
+    "scene": "home",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["room", "blue", "sun"],
+    "exampleSentences": ["Blue room.", "Sunny day."],
+    "followUpQuestions": ["Do you like the blue room?", "Is the sun shining outside?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l1_03",
+    "scene": "home",
+    "level": 1,
+    "lang": "en",
+    "targetWords": ["play", "ball", "now"],
+    "exampleSentences": ["Play now.", "Roll ball."],
+    "followUpQuestions": ["Shall we roll the ball together?", "Are you ready to play?"],
+    "weakPoints": ["short_answers", "silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l2_01",
+    "scene": "home",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["clean", "tidy", "toys"],
+    "exampleSentences": ["Tidy the toys.", "Clean room today."],
+    "followUpQuestions": ["Where do the building blocks go?", "Does your room look nice and tidy?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l2_02",
+    "scene": "home",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["snack", "apple", "crunchy"],
+    "exampleSentences": ["A crunchy apple.", "Time for snack."],
+    "followUpQuestions": ["Is the red apple sweet and crunchy?", "Do you want some water too?"],
+    "weakPoints": ["short_answers", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l2_03",
+    "scene": "home",
+    "level": 2,
+    "lang": "en",
+    "targetWords": ["window", "rain", "puddle"],
+    "exampleSentences": ["Rain on window.", "Look outside now."],
+    "followUpQuestions": ["Can you hear the raindrops tapping?", "Will we splash in a puddle later?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l3_01",
+    "scene": "home",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["blanket", "cuddle", "bedtime"],
+    "exampleSentences": ["Let us tuck under the cozy blanket.", "It is almost bedtime for little pets."],
+    "followUpQuestions": ["Is your blanket soft and warm?", "Shall we tell one quick bedtime story?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l3_02",
+    "scene": "home",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["garden", "flower", "water"],
+    "exampleSentences": ["We can water the purple flowers in the garden.", "Look how tall the green sunflower grew."],
+    "followUpQuestions": ["Which flower in the garden smells the sweetest?", "Did you give the green plant enough water?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l3_03",
+    "scene": "home",
+    "level": 3,
+    "lang": "en",
+    "targetWords": ["kitchen", "bake", "cookie"],
+    "exampleSentences": ["We are baking warm cookies in the kitchen.", "The sweet smell fills the whole house."],
+    "followUpQuestions": ["What shape cookie did you cut out?", "Who will get the very first warm cookie?"],
+    "weakPoints": ["silences", "short_answers"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l4_01",
+    "scene": "home",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["cozy", "comfort", "relaxing"],
+    "exampleSentences": ["Our cozy living room is the most relaxing spot on earth.", "We built a giant pillow fort to read books together."],
+    "followUpQuestions": ["What makes your favorite home corner feel so cozy?", "How many pillows did you use for your reading fort?"],
+    "weakPoints": ["few_words", "silences"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l4_02",
+    "scene": "home",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["routine", "morning", "sunlight"],
+    "exampleSentences": ["Morning sunlight streamed through our living room curtains.", "Following our gentle routine helps our pet start the day happy."],
+    "followUpQuestions": ["What is the first thing you like doing when sunlight appears?", "How do you help your pet wake up cheerfully?"],
+    "weakPoints": ["short_answers", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  },
+  {
+    "id": "home_en_l4_03",
+    "scene": "home",
+    "level": 4,
+    "lang": "en",
+    "targetWords": ["family", "tradition", "peaceful"],
+    "exampleSentences": ["Eating evening snacks together is our peaceful family tradition.", "We shared our favorite moments of the day before turning off the lights."],
+    "followUpQuestions": ["What was your very best memory from today's adventures?", "What peaceful thought helps you drift off to sleep?"],
+    "weakPoints": ["silences", "few_words"],
+    "note": "draft, to be reviewed by a language professional"
+  }
+]
