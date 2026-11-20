@@ -1,7 +1,34 @@
 // server/brain/qwen.js
-// Multi-role Qwen LLM integration with individual role API keys,
+// Multi-role Google AI Studio (Gemini) & Qwen LLM integration with individual role keys,
 // condition-based prompts, child-friendly guardrails, and non-blocking
 // zero-crash fallback to rule engine when keys are absent or offline.
+
+export const GEMINI_ROLE_KEYS = {
+  shop_customer: ['GEMINI_KEY_SHOP_CUSTOMER', 'GOOGLE_KEY_SHOP_CUSTOMER', 'GOOGLE_AI_STUDIO_KEY_SHOP_CUSTOMER'],
+  restaurant_customer: ['GEMINI_KEY_RESTAURANT_CUSTOMER', 'GOOGLE_KEY_RESTAURANT_CUSTOMER', 'GOOGLE_AI_STUDIO_KEY_RESTAURANT_CUSTOMER'],
+  restaurant_chef: ['GEMINI_KEY_RESTAURANT_CHEF', 'GOOGLE_KEY_RESTAURANT_CHEF', 'GOOGLE_AI_STUDIO_KEY_RESTAURANT_CHEF'],
+  hospital_doctor: ['GEMINI_KEY_HOSPITAL_DOCTOR', 'GOOGLE_KEY_HOSPITAL_DOCTOR', 'GOOGLE_AI_STUDIO_KEY_HOSPITAL_DOCTOR'],
+  stage_audience: ['GEMINI_KEY_STAGE_AUDIENCE', 'GOOGLE_KEY_STAGE_AUDIENCE', 'GOOGLE_AI_STUDIO_KEY_STAGE_AUDIENCE'],
+  pet: ['GEMINI_KEY_PET', 'GOOGLE_KEY_PET', 'GOOGLE_AI_STUDIO_KEY_PET'],
+};
+
+export const GEMINI_BANGLA_KEYS = [
+  'GOOGLE_AI_STUDIO_BANGLA_KEY',
+  'GEMINI_KEY_BANGLA',
+  'GOOGLE_KEY_BANGLA',
+  'GOOGLE_AI_STUDIO_KEY',
+  'GOOGLE_AI_STUDIO_API_KEY',
+  'GEMINI_API_KEY',
+  'GOOGLE_API_KEY',
+];
+
+export const GEMINI_FALLBACK_KEYS = [
+  'GOOGLE_AI_STUDIO_KEY',
+  'GOOGLE_AI_STUDIO_API_KEY',
+  'GEMINI_API_KEY',
+  'GOOGLE_API_KEY',
+  'GOOGLE_AI_KEY',
+];
 
 export const ROLE_KEYS = {
   shop_customer: ['QWEN_KEY_SHOP_CUSTOMER', 'QWEN_SHOP_CUSTOMER_KEY'],
@@ -13,6 +40,26 @@ export const ROLE_KEYS = {
 };
 
 export const FALLBACK_KEYS = ['QWEN_API_KEY', 'DASHSCOPE_API_KEY'];
+
+/** Resolve the appropriate Google AI Studio (Gemini) API key */
+export function getGeminiKey(role, lang = 'en', clientKey = null) {
+  if (clientKey && typeof clientKey === 'string' && clientKey.trim()) {
+    return clientKey.trim();
+  }
+  if (lang === 'bn') {
+    for (const v of GEMINI_BANGLA_KEYS) {
+      if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
+    }
+  }
+  const roleVars = GEMINI_ROLE_KEYS[role] || [];
+  for (const v of roleVars) {
+    if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
+  }
+  for (const v of GEMINI_FALLBACK_KEYS) {
+    if (process.env[v] && process.env[v].trim()) return process.env[v].trim();
+  }
+  return null;
+}
 
 /** Resolve the appropriate Qwen API key for a given role */
 export function getRoleKey(role) {
@@ -26,8 +73,8 @@ export function getRoleKey(role) {
   return null;
 }
 
-export function isRoleEnabled(role) {
-  return Boolean(getRoleKey(role));
+export function isRoleEnabled(role, lang = 'en', clientKey = null) {
+  return Boolean(getGeminiKey(role, lang, clientKey) || getRoleKey(role));
 }
 
 export function getEndpoint() {
@@ -39,11 +86,15 @@ export function getModel() {
   return process.env.QWEN_MODEL || 'qwen-turbo';
 }
 
+export function getGeminiModel() {
+  return process.env.GEMINI_MODEL || 'gemini-1.5-flash';
+}
+
 /** Construct role-conditioned, child-friendly system prompt */
 export function buildRoleSystemPrompt(role, lang = 'en', context = {}) {
   const isBn = lang === 'bn';
   const baseRule = isBn
-    ? 'তুমি ৩-৬ বছর বয়সী শিশুর সাথে একটি আনন্দদায়ক খেলার চরিত্রে কথা বলছ। কোনো বাইরের কথা বলবে না। কোনো ভূমিকা বা ব্যাখ্যা দেবে না। শুধুমাত্র ১টি ছোট বাক্য বলবে (১০-১২ শব্দের মধ্যে)। সহজ শিশুতোষ ভাষা ব্যবহার করো। কোনো কোটেশন বা নামের লেবেল ব্যবহার করবে না। সম্পূর্ণ বাংলায় উত্তর দাও।'
+    ? 'তুমি ৩-৬ বছর বয়সী শিশুর সাথে একটি আনন্দদায়ক খেলার চরিত্রে কথা বলছ। কোনো বাইরের কথা বলবে না। কোনো ভূমিকা বা ব্যাখ্যা দেবে না। শুধুমাত্র ১টি ছোট বাক্য বলবে (১০-১২ শব্দের মধ্যে)। সহজ শিশুতোষ মিষ্টি ও স্পষ্ট ভাষা ব্যবহার করো। কোনো কোটেশন বা নামের লেবেল ব্যবহার করবে না। সম্পূর্ণ বাংলায় উত্তর দাও।'
     : 'You are roleplaying with a 3-6 year old child in a fun interactive game. Strictly stay in character. NO outer talk, NO preamble, NO explanations. Exactly ONE short spoken sentence (under 12 words). Simple child-friendly words. No quotation marks or name prefixes. Answer only in English.';
 
   let roleDesc = '';
@@ -102,10 +153,77 @@ export function cleanReplyText(raw) {
 }
 
 /**
- * Generate a role-based reply via Qwen API.
- * Returns null if no API key is set, on timeout, or on any error (graceful fallback).
+ * Generate role reply using Google AI Studio Gemini API.
+ * High-quality, fast, natural Bengali & English understanding.
  */
-export async function generateRoleReply({ role, lang = 'en', utterance = '', history = [], context = {} } = {}) {
+export async function generateGeminiReply({ role, lang = 'en', utterance = '', history = [], context = {}, clientKey = null } = {}) {
+  const apiKey = getGeminiKey(role, lang, clientKey);
+  if (!apiKey) return null;
+
+  const model = getGeminiModel();
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const systemPrompt = buildRoleSystemPrompt(role, lang, context);
+
+  const contextStr = Object.entries(context)
+    .filter(([_, v]) => v != null && v !== '')
+    .map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`)
+    .join(', ');
+
+  const userContent = utterance
+    ? `Child said: "${utterance}". ${contextStr ? `Situation: (${contextStr}).` : ''} Give 1 short, natural, warm spoken line.`
+    : `Situation: (${contextStr || 'Interaction'}). Give 1 short, natural, warm spoken line.`;
+
+  const contents = [
+    ...history.slice(-3).map((h) => ({
+      role: h.who === 'child' || h.role === 'child' ? 'user' : 'model',
+      parts: [{ text: h.text }],
+    })),
+    {
+      role: 'user',
+      parts: [{ text: userContent }],
+    },
+  ];
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents,
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 60,
+        },
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      return null;
+    }
+
+    const data = await res.json();
+    const rawReply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return cleanReplyText(rawReply);
+  } catch (_err) {
+    clearTimeout(timeoutId);
+    return null;
+  }
+}
+
+/**
+ * Generate role reply using Qwen API.
+ */
+export async function generateQwenReply({ role, lang = 'en', utterance = '', history = [], context = {} } = {}) {
   const apiKey = getRoleKey(role);
   if (!apiKey) return null;
 
@@ -124,7 +242,7 @@ export async function generateRoleReply({ role, lang = 'en', utterance = '', his
 
   const messages = [
     { role: 'system', content: systemPrompt },
-    ...history.slice(-3).map((h) => ({ role: h.role === 'child' ? 'user' : 'assistant', content: h.text })),
+    ...history.slice(-3).map((h) => ({ role: h.who === 'child' || h.role === 'child' ? 'user' : 'assistant', content: h.text })),
     { role: 'user', content: userContent },
   ];
 
@@ -157,4 +275,25 @@ export async function generateRoleReply({ role, lang = 'en', utterance = '', his
     clearTimeout(timeoutId);
     return null;
   }
+}
+
+/**
+ * Generate a role-based reply.
+ * Prioritizes Google AI Studio (Gemini) API (especially for natural Bangla conversation),
+ * falls back to Qwen API, and safely defaults to null for instant rule engine fallback.
+ */
+export async function generateRoleReply({ role, lang = 'en', utterance = '', history = [], context = {}, clientKey = null } = {}) {
+  // 1. Google AI Studio (Gemini)
+  if (getGeminiKey(role, lang, clientKey)) {
+    const geminiText = await generateGeminiReply({ role, lang, utterance, history, context, clientKey });
+    if (geminiText) return geminiText;
+  }
+
+  // 2. Qwen LLM
+  if (getRoleKey(role)) {
+    const qwenText = await generateQwenReply({ role, lang, utterance, history, context });
+    if (qwenText) return qwenText;
+  }
+
+  return null;
 }

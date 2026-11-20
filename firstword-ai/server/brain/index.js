@@ -57,7 +57,10 @@ export function greet(session, child, lang, returning) {
 }
 
 /** Main entry: process one child input */
-export async function processTurn(session, child, { text, source }) {
+export async function processTurn(session, child, { text, source, clientKey = null }) {
+  if (clientKey) {
+    session.clientKey = clientKey;
+  }
   const lang = child.lang || 'en';
   const ctx = ctxFor(session, child, lang);
   session.turnCount++;
@@ -685,13 +688,15 @@ async function fallback(session, child, ctx, n) {
   const weakPoints = detectWeakPoints(session, ctx.level);
   const retrieved = retrieve({ lang, scene: session.scene, level: ctx.level, weakPoints });
 
-  // Qwen AI Pet companion fallback (if role key or master key provided)
-  if (qwen.isRoleEnabled('pet')) {
-    const qwenText = await qwen.generateRoleReply({
+  // Google AI Studio (Gemini) / Qwen AI Pet companion fallback (if role key or master key provided)
+  const clientKey = session.clientKey || ctx.clientKey || null;
+  if (qwen.isRoleEnabled('pet', lang, clientKey)) {
+    const aiText = await qwen.generateRoleReply({
       role: 'pet',
       lang,
       utterance: n.raw,
       history: session.history,
+      clientKey,
       context: {
         petName: pet.name,
         petType: pet.type,
@@ -700,9 +705,9 @@ async function fallback(session, child, ctx, n) {
         worldSummary: W.describeWorld(session.world),
       },
     });
-    if (qwenText) {
-      r.pet(qwenText, 'happy', 'bounce');
-      r.intent = 'qwen_pet';
+    if (aiText) {
+      r.pet(aiText, 'happy', 'bounce');
+      r.intent = 'ai_pet';
       if (retrieved[0]) {
         r.usedCurriculum = {
           id: retrieved[0].id,

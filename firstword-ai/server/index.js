@@ -47,7 +47,7 @@ function resolveChild(childId, body = {}) {
     child = db.createChild({
       name: body.name || 'sreya',
       age: body.age || 4,
-      lang: body.lang || 'bn',
+      lang: body.lang || 'en',
       petType: body.petType || 'cat',
       petName: body.petName || 'Momo'
     });
@@ -66,6 +66,7 @@ function resolveSession(sessionId, childId, body = {}) {
         child: saved.child,
         state: saved.state,
         rec: saved.rec,
+        clientKey: saved.clientKey || null,
         lastActive: Date.now(),
       };
       live.set(sessionId, s);
@@ -73,7 +74,7 @@ function resolveSession(sessionId, childId, body = {}) {
     }
 
     const child = resolveChild(childId || body.childId, body);
-    const lang = body.lang || child.lang || 'bn';
+    const lang = body.lang || child.lang || 'en';
     const state = brain.newSession(child, lang);
     if (body.location) {
       state.world.location = body.location;
@@ -175,9 +176,11 @@ app.post('/api/sessions', (req, res) => {
   if (req.body?.lang) db.updateChild(child.id, { lang: req.body.lang });
   const lang = child.lang;
   const returning = db.sessionsForChild(child.id).length > 0;
+  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || null;
   const state = brain.newSession(child, lang);
+  if (clientKey) state.clientKey = clientKey;
   const rec = db.createSessionRecord ? db.createSessionRecord(child) : { id: 'sess_' + Date.now(), turns: [] };
-  const s = { id: rec.id, childId: child.id, child, state, rec, lastActive: Date.now() };
+  const s = { id: rec.id, childId: child.id, child, state, rec, clientKey, lastActive: Date.now() };
   live.set(s.id, s);
   if (db.saveLiveSession) db.saveLiveSession(s.id, s);
   const greeting = brain.greet(state, child, lang, returning);
@@ -191,9 +194,11 @@ app.post('/api/sessions/:id/say', async (req, res) => {
   const text = String(req.body?.text || '').slice(0, 500);
   const source = ['voice', 'button', 'typed', 'silence'].includes(req.body?.source) ? req.body.source : 'typed';
   if (source !== 'silence' && !text.trim()) return res.status(400).json({ error: 'Nothing heard' });
+  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  if (clientKey) { s.clientKey = clientKey; if (s.state) s.state.clientKey = clientKey; }
   s.lastActive = Date.now();
   try {
-    const response = await brain.processTurn(s.state, s.child, { text, source });
+    const response = await brain.processTurn(s.state, s.child, { text, source, clientKey: s.clientKey });
     if (db.recordTurn && s.rec) db.recordTurn(s.rec, s.child, { text, source, response, metrics: response.metrics });
     response.rewards = checkRewards(s.child, response, s.rec, { text, source });
     response.stickerCount = (s.child.stickers || []).length;
@@ -210,13 +215,15 @@ app.post('/api/sessions/:id/say', async (req, res) => {
 app.post('/api/sessions/:id/scene', async (req, res) => {
   const s = resolveSession(req.params.id, req.body?.childId, req.body);
   const scene = String(req.body?.scene || 'home');
+  const clientKey = req.headers['x-gemini-key'] || req.headers['x-google-api-key'] || req.body?.apiKey || s.clientKey || null;
+  if (clientKey) { s.clientKey = clientKey; if (s.state) s.state.clientKey = clientKey; }
   const phrases = {
     en: { home: 'let us go home', restaurant: 'let us go to the restaurant', shop: 'let us go to the shop', hospital: 'let us go to the hospital', stage: 'let us go to the stage', emergency: 'help my pet', create: 'let us create our own world', park: 'let us go to the park', beach: 'let us go to the beach', space: 'let us go to space' },
     bn: { home: 'চলো বাড়ি যাই', restaurant: 'চলো রেস্টুরেন্টে যাই', shop: 'চলো দোকানে যাই', hospital: 'চলো হাসপাতালে যাই', stage: 'চলো মঞ্চে যাই', emergency: 'বন্ধুকে সাহায্য করি', create: 'চলো নিজের জগৎ বানাই', park: 'চলো পার্কে যাই', beach: 'চলো সমুদ্রে যাই', space: 'চলো মহাকাশে যাই' },
   };
   const text = (phrases[s.child.lang] || phrases.en)[scene] || phrases.en.home;
   s.lastActive = Date.now();
-  const response = await brain.processTurn(s.state, s.child, { text, source: 'button' });
+  const response = await brain.processTurn(s.state, s.child, { text, source: 'button', clientKey: s.clientKey });
   if (db.recordTurn && s.rec) db.recordTurn(s.rec, s.child, { text, source: 'button', response, metrics: response.metrics });
   response.rewards = checkRewards(s.child, response, s.rec, { text, source: 'button' });
   response.stickerCount = (s.child.stickers || []).length;

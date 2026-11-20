@@ -108,7 +108,7 @@ async function showSelect(parentMode = false) {
   try { kids = await api.children(); } catch (e) { console.warn(e); }
   if (!Array.isArray(kids)) kids = [];
   if (kids.length === 0) {
-    kids = [{ id: 'sreya', name: 'sreya', age: '4', lang: uiLang || 'bn', petType: 'cat', petName: 'Momo', isPreview: true }];
+    kids = [{ id: 'sreya', name: 'sreya', age: '4', lang: 'en', petType: 'cat', petName: 'Momo', isPreview: true }];
   }
   const el = screen('select', `
     <button class="hud-btn back" id="backTitle" title="${esc(L('back'))}">←</button>

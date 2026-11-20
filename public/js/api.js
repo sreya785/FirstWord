@@ -3,10 +3,14 @@
 async function req(method, url, body, headers = {}) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timeoutId = controller ? setTimeout(() => controller.abort(), 18000) : null;
+  const storedGeminiKey = (typeof localStorage !== 'undefined') ? (localStorage.getItem('fw_gemini_api_key') || localStorage.getItem('fw_google_key') || '') : '';
+  const finalHeaders = { 'content-type': 'application/json', ...headers };
+  if (storedGeminiKey) finalHeaders['x-gemini-key'] = storedGeminiKey;
+
   try {
     const res = await fetch(url, {
       method,
-      headers: { 'content-type': 'application/json', ...headers },
+      headers: finalHeaders,
       body: body ? JSON.stringify(body) : undefined,
       signal: controller ? controller.signal : undefined,
     });
@@ -27,7 +31,7 @@ async function req(method, url, body, headers = {}) {
 }
 
 const DEFAULT_CHILDREN = [
-  { id: 'sreya', name: 'sreya', age: '4', lang: 'bn', petType: 'cat', petName: 'Momo', isPreview: true, stars: 12, words: 18 }
+  { id: 'sreya', name: 'sreya', age: '4', lang: 'en', petType: 'cat', petName: 'Momo', isPreview: true, stars: 12, words: 18 }
 ];
 
 function getLocalKids() {
@@ -35,7 +39,14 @@ function getLocalKids() {
     const s = localStorage.getItem('fw_cached_kids');
     if (s) {
       const arr = JSON.parse(s);
-      if (Array.isArray(arr) && arr.length > 0) return arr;
+      if (Array.isArray(arr) && arr.length > 0) {
+        for (const k of arr) {
+          if (k.id === 'sreya' || k.name?.toLowerCase() === 'sreya') {
+            k.lang = 'en';
+          }
+        }
+        return arr;
+      }
     }
   } catch { }
   return [...DEFAULT_CHILDREN];

@@ -166,6 +166,11 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
       <label class="switch"><span>🔊 ${L('mute')}</span><input type="checkbox" id="setSound" checked></label>
       <label class="switch"><span>🎵 Ambience</span><input type="checkbox" id="setAmb" checked></label>
       <div class="drawer-lang"><span>${L('language')}</span><div class="lang-toggle"><button data-lang="en" class="${lang === 'en' ? 'active' : ''}">EN</button><button data-lang="bn" class="${lang === 'bn' ? 'active' : ''}">বাং</button></div></div>
+      <div class="drawer-api-card" style="margin:8px 0;padding:10px 12px;background:rgba(255,255,255,0.7);border-radius:12px;display:flex;flex-direction:column;gap:5px;">
+        <span class="small" style="font-weight:800;color:var(--brand)">✨ Google AI Studio API Key (Bangla AI):</span>
+        <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy... (Google AI Studio Key)" style="padding:6px 10px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;width:100%;box-sizing:border-box;">
+        <span class="small muted" style="font-size:10px;line-height:1.3;">${lang === 'bn' ? 'বাংলা চমৎকারভাবে বুঝতে Google AI Studio API Key ব্যবহার করুন।' : 'Use Google AI Studio API Key for smart conversational Bangla & English.'}</span>
+      </div>
       <p class="muted small">${speech.supported ? (lang === 'bn' ? 'কথা বলো, টাইপ করো বা ফ্রেজ ট্যাপ করো — সবই ঠিক। ভয়েস দিয়ে বলতে পারো "রেস্টুরেন্টে চলো", "দোকানে চলো", "জুম ইন" ইত্যাদি।' : 'Talk, type or tap a phrase. With voice control you can simply say "Go to restaurant", "Take me to shop", "Zoom in", "Dance", etc.') : L('noMic')}</p>
       <div class="pause-actions">
         <button class="btn big" id="resumeBtn">▶ ${lang === 'bn' ? 'খেলা চালাও' : 'Resume'}</button>
@@ -1062,6 +1067,13 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
       setMicState();
       if (S.voiceControlActive) startListening();
       else speech.abort();
+    });
+  }
+  const geminiInput = $('geminiApiKeyInput');
+  if (geminiInput) {
+    geminiInput.value = localStorage.getItem('fw_gemini_api_key') || '';
+    geminiInput.addEventListener('input', (e) => {
+      localStorage.setItem('fw_gemini_api_key', e.target.value.trim());
     });
   }
   el.mic.addEventListener('click', () => { if (S.listening) { speech.stop(); return; } if (S.speaking) { speech.cancel(); return; } startListening(); });

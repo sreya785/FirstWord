@@ -122,11 +122,13 @@ export async function handle(session, n, ctx) {
     const topic = nouns[0]?.word || st.topic || (lang === 'bn' ? 'গল্পটা' : 'the story');
     if (words >= 4 || st.lines % 2 === 0) r.event('applause_soft');
 
-    if (qwen.isRoleEnabled('stage_audience')) {
+    const clientKey = session?.clientKey || ctx?.clientKey || null;
+    if (qwen.isRoleEnabled('stage_audience', lang, clientKey)) {
       const aiAudience = await qwen.generateRoleReply({
         role: 'stage_audience',
         lang,
         utterance: n.raw,
+        clientKey,
         context: { topic, type: st.type, lines: st.lines },
       });
       if (aiAudience) {

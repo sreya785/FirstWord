@@ -76,7 +76,7 @@ export function load() {
         id: 'sreya',
         name: 'sreya',
         age: 4,
-        lang: 'bn',
+        lang: 'en',
         petType: 'cat',
         petName: 'Momo',
         created: 1774000000000,
@@ -84,9 +84,13 @@ export function load() {
         stickers: ['apple', 'star']
       });
     }
+    const sreya = db.children.find((c) => c.id === '61a1b268f77a' || c.name?.toLowerCase() === 'sreya');
+    if (sreya) {
+      sreya.lang = 'en';
+    }
   } catch (e) {
     console.error('Could not load db.json, starting fresh:', e.message);
-    db = { children: [{ id: 'sreya', name: 'sreya', age: 4, lang: 'bn', petType: 'cat', petName: 'Momo', created: 1774000000000, settings: { storeTranscripts: true, dailyLimitMinutes: 20 }, stickers: ['apple', 'star'] }], sessions: [] };
+    db = { children: [{ id: 'sreya', name: 'sreya', age: 4, lang: 'en', petType: 'cat', petName: 'Momo', created: 1774000000000, settings: { storeTranscripts: true, dailyLimitMinutes: 20 }, stickers: ['apple', 'star'] }], sessions: [] };
   }
   return db;
 }

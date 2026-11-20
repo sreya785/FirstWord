@@ -151,6 +151,10 @@ export const speech = {
         this.activeVoice = sorted[0];
         return this.activeVoice;
       }
+      // Never force an English voice onto Bengali text.
+      // Delegating with u.voice = null lets Chrome & Edge use their native cloud Bengali voice.
+      this.activeVoice = null;
+      return null;
     }
 
     // 2. High quality storytelling voice pool (Edge Natural Jenny/Aria, Google Female, Samantha, Zira)
@@ -237,7 +241,9 @@ export const speech = {
 
         const u = new SpeechSynthesisUtterance(cleanText);
         u.lang = isBn ? 'bn-BD' : 'en-US';
-        if (voice) u.voice = voice;
+        if (voice && (!isBn || (voice.lang || '').toLowerCase().startsWith('bn') || /bangla|bengali|বাংলা/i.test(voice.name || ''))) {
+          u.voice = voice;
+        }
 
         // Warm, natural storytelling female voice calibration:
         // Grounded natural pitch ~1.02 and gentle relaxed pacing ~0.90 matching localhost

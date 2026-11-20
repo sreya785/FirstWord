@@ -27,13 +27,14 @@ function listFoods(keys, lang) {
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 }
 
-async function chefSay(r, text, lang, utterance = '', context = {}) {
+async function chefSay(r, text, lang, utterance = '', context = {}, clientKey = null) {
   let line = text;
-  if (utterance && qwen.isRoleEnabled('restaurant_chef')) {
+  if (utterance && qwen.isRoleEnabled('restaurant_chef', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'restaurant_chef',
       lang,
       utterance,
+      clientKey,
       context: { chef: 'Chef Rafi', ...context },
     });
     if (aiLine) line = aiLine;
@@ -93,11 +94,13 @@ async function customerSays(session, ctx, r, text, utterance = '', context = {})
   session.sceneState.spoke = true;
   placeActors(session, lang);
   let line = text;
-  if (utterance && qwen.isRoleEnabled('restaurant_customer')) {
+  const clientKey = session?.clientKey || ctx?.clientKey || null;
+  if (utterance && qwen.isRoleEnabled('restaurant_customer', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'restaurant_customer',
       lang,
       utterance,
+      clientKey,
       context: { table: session.sceneState?.customerTable, order: session.sceneState?.customerOrder, ...context },
     });
     if (aiLine) line = aiLine;

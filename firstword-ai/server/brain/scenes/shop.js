@@ -36,11 +36,13 @@ async function customerSay(session, ctx, r, text, utterance = '', context = {}) 
   const who = CUSTOMERS[(st.customerCount || 0) % CUSTOMERS.length];
   const name = lang === 'bn' ? who.bn : who.en;
   let line = text;
-  if (utterance && qwen.isRoleEnabled('shop_customer')) {
+  const clientKey = session?.clientKey || null;
+  if (utterance && qwen.isRoleEnabled('shop_customer', lang, clientKey)) {
     const aiLine = await qwen.generateRoleReply({
       role: 'shop_customer',
       lang,
       utterance,
+      clientKey,
       context: { stage: st.stage, item: st.customerItem, price: st.price, paid: st.paid, ...context },
     });
     if (aiLine) line = aiLine;
