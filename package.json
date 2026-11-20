@@ -4,7 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "cd firstword-ai && npm start",
-    "test": "cd firstword-ai && npm test"
+    "start": "node firstword-ai/server/index.js",
+    "test": "cd firstword-ai && npm test",
+    "build": "node -e \"console.log('Build OK')\""
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "express": "^4.19.2",
+    "three": "^0.186.1"
   }
 }

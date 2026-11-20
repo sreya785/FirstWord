@@ -306,6 +306,27 @@ export function personParts(key, { color = null, seed = 0, sit = false } = {}) {
   if (s.mask) head.parts.push(['box', [H * 1.6, H * 0.5, 0.05], '#111827', [0, H * 0.2, H * 0.78]]);
   if (s.eyepatch) head.parts.push(['circle', [0.07], DARK, [-H * 0.4, H * 0.2, H * 0.92]]);
   if (s.nose) head.parts.push(['sphere', [0.07], s.nose, [0, -H * 0.1, H * 0.95]]);
+
+  // 3D Expressive Facial Features (Always visible from the front)
+  for (const side of [-1, 1]) {
+    // White eye sclera
+    head.parts.push(['sphere', [H * 0.22], '#ffffff', [side * H * 0.38, H * 0.12, H * 0.92], 0, [1, 1.25, 0.45]]);
+    // Dark sparkling iris / pupil
+    head.parts.push(['sphere', [H * 0.14], '#1e1b4b', [side * H * 0.38, H * 0.12, H * 0.98], 0, [1, 1.2, 0.35]]);
+    // Shiny white highlight reflection
+    head.parts.push(['sphere', [H * 0.05], '#ffffff', [side * H * 0.34, H * 0.17, H * 1.01]]);
+    // Cute curved eyebrow
+    head.parts.push(['capsule', [H * 0.032, H * 0.22], hair, [side * H * 0.38, H * 0.33, H * 0.93], [0, 0, side * -12]]);
+    // Rosy pink blush cheeks
+    if (!s.zombie) {
+      head.parts.push(['sphere', [H * 0.15], 'rgba(244,114,182,0.7)', [side * H * 0.58, -H * 0.14, H * 0.85], 0, [1.2, 0.65, 0.35]]);
+    }
+  }
+  // Cute button nose
+  head.parts.push(['sphere', [H * 0.09], skin, [0, -H * 0.04, H * 0.99], 0, [1.2, 0.9, 0.8]]);
+  // Smiling mouth
+  head.parts.push(['torus', [H * 0.16, H * 0.038, 8, 20, Math.PI], '#be123c', [0, -H * 0.22, H * 0.96], [0, 0, 180]]);
+
   head.parts.push(['__face', H, { mouth: 'smile', eyes: 'open', blush: !s.zombie, glasses: !!s.glasses, beard: s.beard || null, kind: face }]);
   parts.push(head);
   const scale = s.baby ? 0.55 : s.child ? 0.78 : 1;

@@ -345,52 +345,60 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
   function makeBanknoteTexture({ amount = '৳ 100', color = '#15803d', bg = '#dcfce7', sub = 'BANGLADESH BANK' } = {}) {
     if (typeof document === 'undefined') return null;
     const c = document.createElement('canvas');
-    c.width = 256; c.height = 128;
+    c.width = 512; c.height = 256;
     const ctx = c.getContext('2d');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, 256, 128);
 
+    // Rich banknote background
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, 512, 256);
+
+    // Decorative outer guilloche borders
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 6;
+    ctx.strokeRect(12, 12, 488, 232);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(20, 20, 472, 216);
+
+    // Corner rosettes
+    ctx.font = 'bold 32px sans-serif';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.fillText(amount, 30, 58);
+    ctx.fillText(amount, 30, 225);
+    ctx.textAlign = 'right';
+    ctx.fillText(amount, 482, 58);
+    ctx.fillText(amount, 482, 225);
+
+    // Bank title
+    ctx.font = 'bold 20px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(sub, 256, 48);
+
+    // Central ornamental oval
+    ctx.beginPath();
+    ctx.ellipse(256, 130, 96, 68, 0, 0, Math.PI * 2);
     ctx.strokeStyle = color;
     ctx.lineWidth = 3;
-    ctx.strokeRect(6, 6, 244, 116);
-    ctx.lineWidth = 1;
-    ctx.strokeRect(10, 10, 236, 108);
-
-    ctx.font = 'bold 16px sans-serif';
-    ctx.fillStyle = color;
-    ctx.textAlign = 'left';
-    ctx.fillText(amount, 14, 27);
-    ctx.textAlign = 'right';
-    ctx.fillText(amount, 242, 27);
-    ctx.fillText(amount, 242, 112);
-    ctx.textAlign = 'left';
-    ctx.fillText(amount, 14, 112);
-
-    ctx.font = 'bold 10px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(sub, 128, 24);
-
-    ctx.beginPath();
-    ctx.ellipse(128, 64, 46, 32, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fillStyle = 'rgba(255,255,255,0.65)';
     ctx.fill();
 
+    // Bold center denomination
     ctx.fillStyle = color;
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText(amount, 128, 71);
+    ctx.font = 'bold 46px sans-serif';
+    ctx.fillText(amount, 256, 146);
 
+    // Golden metallic foil security thread
     ctx.fillStyle = '#ca8a04';
-    ctx.fillRect(195, 6, 6, 116);
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.fillRect(197, 6, 2, 116);
+    ctx.fillRect(390, 12, 14, 232);
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(394, 12, 5, 232);
 
-    ctx.font = '8px monospace';
-    ctx.fillStyle = '#374151';
+    // Serial number
+    ctx.font = '16px monospace';
+    ctx.fillStyle = '#1f2937';
     ctx.textAlign = 'left';
-    ctx.fillText('BD 9248172', 16, 92);
+    ctx.fillText('BD 74928103 ★', 32, 185);
 
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
@@ -401,13 +409,13 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
   function moneyProp() {
     const g = new THREE.Group();
     const tex1 = makeBanknoteTexture({ amount: '৳ 100', color: '#166534', bg: '#dcfce7' });
-    const note1 = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.005, 0.12), new THREE.MeshStandardMaterial({ map: tex1, roughness: 0.6 }));
+    const note1 = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.006, 0.14), new THREE.MeshStandardMaterial({ map: tex1, roughness: 0.5 }));
     g.add(note1);
 
     const tex2 = makeBanknoteTexture({ amount: '৳ 50', color: '#0369a1', bg: '#e0f2fe' });
-    const note2 = new THREE.Mesh(new THREE.BoxGeometry(0.23, 0.005, 0.115), new THREE.MeshStandardMaterial({ map: tex2, roughness: 0.6 }));
-    note2.position.set(-0.01, -0.006, 0.012);
-    note2.rotation.y = 0.08;
+    const note2 = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.006, 0.135), new THREE.MeshStandardMaterial({ map: tex2, roughness: 0.5 }));
+    note2.position.set(-0.015, -0.007, 0.015);
+    note2.rotation.y = 0.12;
     g.add(note2);
 
     const hand = handProp(-1);
@@ -424,27 +432,34 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
   }
   function makeCounterMoneyMesh() {
     const g = new THREE.Group();
+    // Green 100 Taka banknote
     const tex1 = makeBanknoteTexture({ amount: '৳ 100', color: '#166534', bg: '#dcfce7' });
-    const note1 = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.008, 0.18), new THREE.MeshStandardMaterial({ map: tex1, roughness: 0.5 }));
+    const note1 = new THREE.Mesh(new THREE.BoxGeometry(0.40, 0.008, 0.20), new THREE.MeshStandardMaterial({ map: tex1, roughness: 0.45 }));
     g.add(note1);
 
+    // Blue 50 Taka banknote fanned underneath
     const tex2 = makeBanknoteTexture({ amount: '৳ 50', color: '#0369a1', bg: '#e0f2fe' });
-    const note2 = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.008, 0.175), new THREE.MeshStandardMaterial({ map: tex2, roughness: 0.5 }));
-    note2.position.set(0.03, 0.009, 0.015);
-    note2.rotation.y = 0.16;
+    const note2 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.008, 0.19), new THREE.MeshStandardMaterial({ map: tex2, roughness: 0.45 }));
+    note2.position.set(0.04, 0.009, 0.02);
+    note2.rotation.y = 0.18;
     g.add(note2);
 
-    const coinMat = new THREE.MeshStandardMaterial({ color: '#facc15', metalness: 0.85, roughness: 0.25 });
-    const coin = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.014, 20), coinMat);
-    coin.position.set(-0.1, 0.016, 0.02);
-    g.add(coin);
-    const coinRim = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.004, 8, 20), new THREE.MeshStandardMaterial({ color: '#eab308', metalness: 0.9, roughness: 0.2 }));
-    coinRim.rotation.x = Math.PI / 2;
-    coinRim.position.copy(coin.position);
-    coinRim.position.y += 0.007;
-    g.add(coinRim);
+    // Stack of shiny gold coins
+    const coinMat = new THREE.MeshStandardMaterial({ color: '#facc15', metalness: 0.92, roughness: 0.18 });
+    const coinRimMat = new THREE.MeshStandardMaterial({ color: '#eab308', metalness: 0.95, roughness: 0.15 });
 
-    g.position.set(0.48, 1.07, -3.85);
+    for (let i = 0; i < 3; i++) {
+      const coin = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.015, 24), coinMat);
+      coin.position.set(-0.14 + (i * 0.025), 0.018 + (i * 0.014), 0.03 - (i * 0.01));
+      g.add(coin);
+      const coinRim = new THREE.Mesh(new THREE.TorusGeometry(0.044, 0.004, 8, 24), coinRimMat);
+      coinRim.rotation.x = Math.PI / 2;
+      coinRim.position.copy(coin.position);
+      coinRim.position.y += 0.008;
+      g.add(coinRim);
+    }
+
+    g.position.set(0.48, 1.085, -3.85);
     g.rotation.y = -0.15;
     g.userData.pick = { kind: 'counter_money', name: 'Money on Counter' };
     g.traverse((m) => { m.userData.pick = g.userData.pick; });
@@ -1119,26 +1134,27 @@ export async function mountPlay3D(g, childId, { navigate, toast, remount, openPa
       || (hit.point && hit.point.z < -3.8 && hit.point.z > -5.2 && hit.point.x < 0.2 && hit.point.x > -3.2);
 
     if (isDeskCash) {
-      if (st.stage === 'money_held') {
+      if (st.stage === 'payment' || st.stage === 'money_held') {
         sfx.play('unlock_sticker');
-        fx.sparkles(new THREE.Vector3(-1.75, 1.35, -4.4), 18);
+        fx.sparkles(new THREE.Vector3(-1.75, 1.35, -4.4), 22);
+        fx.sparkles(new THREE.Vector3(0.48, 1.2, -3.85), 16);
+        if (S.counterMoneyMesh) {
+          world.root.remove(S.counterMoneyMesh);
+          S.counterMoneyMesh = null;
+        }
         engine.setViewProp('money', null);
         engine.setViewProp('scanner', scannerProp());
-        send('Put in box', 'tap').catch(() => {});
+        if (st.stage === 'payment') {
+          send('Take the money', 'tap').then(() => send('Put in box', 'tap')).catch(() => {});
+        } else {
+          send('Put in box', 'tap').catch(() => {});
+        }
         return;
       }
       if (st.stage === 'change_needed') {
         sfx.play('unlock_sticker');
         fx.sparkles(new THREE.Vector3(-1.75, 1.35, -4.4), 16);
         send('Give change', 'tap').catch(() => {});
-        return;
-      }
-      if (st.stage === 'payment') {
-        const promptText = lang === 'bn'
-          ? 'আগে কাউন্টার থেকে টাকাটা হাতে নাও — টাকাতে চাপ দাও!'
-          : 'First click the money on the counter to take it!';
-        showLine({ who: 'pet', text: promptText });
-        speakItems([{ who: 'pet', text: promptText }]);
         return;
       }
       if (st.stage === 'sold' || st.changeDue === 0) {

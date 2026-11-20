@@ -3,11 +3,15 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/firstword-ai/api/index.js"
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
     },
     {
       "source": "/(.*)",
-      "destination": "/firstword-ai/public/$1"
+      "destination": "/public/$1"
     }
   ]
 }

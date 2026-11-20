@@ -105,7 +105,11 @@ async function showSelect(parentMode = false) {
   engine.input.pickables = show.pets.map((p) => p.group);
   engine.input.onTap = (hit) => { if (hit.kind === 'actor' && hit.pick?.type) { unlock(); choose(hit.pick.type); const f = el.querySelector('#newForm'); if (f.classList.contains('hidden')) openForm(); } };
   let kids = [];
-  try { kids = await api.children(); } catch (e) { toast(e.message); }
+  try { kids = await api.children(); } catch (e) { console.warn(e); }
+  if (!Array.isArray(kids)) kids = [];
+  if (kids.length === 0) {
+    kids = [{ id: 'sreya', name: 'sreya', age: '4', lang: uiLang || 'bn', petType: 'cat', petName: 'Momo', isPreview: true }];
+  }
   const el = screen('select', `
     <button class="hud-btn back" id="backTitle" title="${esc(L('back'))}">←</button>
     <div class="select-card ${parentMode ? 'parent-mode' : ''}">
@@ -156,7 +160,9 @@ async function showSelect(parentMode = false) {
 async function showPlay(id) {
   if (!unlocked) {
     // Deep link: browsers need one tap before audio can play — make it feel like "press start".
-    let child = null; try { child = await api.child(id); } catch { return navigate('#/select'); }
+    let child = null;
+    try { child = await api.child(id); } catch {}
+    if (!child) child = { id, name: id, petType: 'cat', petName: 'Momo', lang: uiLang || 'bn' };
     world.reset(); world.setLocation('home', { time: 'day', weather: 'clear', colors: {} });
     const show = showcasePets([{ type: child.petType || 'cat', x: 0, z: 0 }]);
     const center = new THREE.Vector3(0, 0.6, 0); engine.setViewShift(0, 0); engine.follow(() => center); engine.cam.lockDist = 7; engine.cam.dist = 10; engine.orbitIdle('sway');

@@ -180,7 +180,7 @@ export class World {
         let anchored = anch[c.role] || anch[c.key];
         // shop customers queue up in front of the counter, in the order they arrived
         if (this.location === 'shop' && c.role === 'customer') {
-            const n = Math.min(SHOP_QUEUE.length - 1, Math.max(0, (c.queue ?? 0)));
+          const n = Math.min(SHOP_QUEUE.length - 1, Math.max(0, (c.queue ?? 0)));
           anchored = SHOP_QUEUE[n];
         }
         const custom = this.location === 'restaurant' && (c.role === 'customer' || c.role === 'diner' || c.role === 'chef') && typeof c.x === 'number' && typeof c.y === 'number';
@@ -201,10 +201,10 @@ export class World {
         if (!g.userData.billboard && !fly) { const sh = blobShadow(0.6); sh.scale.setScalar(1 / g.scale.x); g.add(sh); }
         this.actorG.add(g);
         if (this.location === 'shop' && c.role === 'customer') {
-          const yaw = Math.atan2(0.35 - from.x, -6.5 - from.z);
+          const yaw = Math.atan2(0 - from.x, -4.8 - from.z);
           g.rotation.set(0, yaw, 0);
         }
-        if (this.location === 'shop' && (c.role === 'shopkeeper' || c.role === 'friend')) g.rotation.set(0, Math.PI, 0);
+        if (this.location === 'shop' && (c.role === 'shopkeeper' || c.role === 'friend')) g.rotation.set(0, 0, 0);
         a = { id, key: c.key, kind, g, named: built.named, data: c, color: c.color || null, target, from, walk: { t0: this.t, dur: 1.9 }, fly, phase: Math.random() * 6, born: this.t, scale: g.scale.x, baseY: target.y };
         this.actors.set(id, a); added.push(a);
         this.#registerAnim(c.key, built.named, g);
@@ -218,7 +218,7 @@ export class World {
             a.target = new THREE.Vector3(qx, 0, qz);
             a.walk = { t0: this.t, dur: 1.2 };
           }
-          const yaw = Math.atan2(0.35 - a.g.position.x, -6.5 - a.g.position.z);
+          const yaw = Math.atan2(0 - a.g.position.x, -4.8 - a.g.position.z);
           a.g.rotation.set(0, yaw, 0);
         }
         // customers / chefs with custom world coords slide to their new spot instead of teleporting
@@ -341,14 +341,14 @@ export class World {
       if (p >= 1) {
         a.walk = null; a.baseY = a.target.y; g.position.copy(a.target);
         if (this.location === 'shop' && a.data?.role === 'customer') {
-          const yaw = Math.atan2(0.35 - g.position.x, -6.5 - g.position.z);
+          const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
           g.rotation.set(0, yaw, 0);
         }
         if (n.legL) { n.legL.rotation.x = n.legR.rotation.x = 0; }
         for (const l of ['legFL', 'legFR', 'legBL', 'legBR']) if (n[l]) n[l].rotation.x = 0;
       }
       if (this.location === 'shop' && a.data?.role === 'customer') {
-        const yaw = Math.atan2(0.35 - g.position.x, -6.5 - g.position.z);
+        const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
         g.rotation.set(0, yaw, 0);
       }
       return;
@@ -357,7 +357,7 @@ export class World {
     const speaking = speakingNow;
     // face the counter / pet / camera
     if (this.location === 'shop' && a.data?.role === 'customer') {
-      const yaw = Math.atan2(0.35 - g.position.x, -6.5 - g.position.z);
+      const yaw = Math.atan2(0 - g.position.x, -4.8 - g.position.z);
       g.rotation.set(0, yaw, 0);
     } else if (a.kind !== 'object' && petPos) {
       let facePt = petPos;
@@ -400,167 +400,183 @@ export const LOCS = {
   park: { ground: 'grass', set: (W) => { W.ring('grass'); W.trees('tree', 14, 11, 30, 2, 1.1); W.put('slide', -5.5, -6, { ry: 15 }); W.put('swing', 5.5, -6.5, { ry: -10 }); W.put('bench', -7.5, -2.5, { ry: 35 }); W.put('bench', 7.8, -2.2, { ry: -35 }); W.pond(8, -10, 3.2); W.put('lamp', -3, -8); W.put('lamp', 3, -8); W.scatter('flower', 22, 8.5, 14, { seed: 3 }); W.put('tree', -9, -8, { s: 1.4 }); W.put('mushroom', -8, -5.5, { s: 0.7 }); } },
   emergency: { ground: 'grass', set: (W) => { W.ring('grass'); W.trees('tree', 12, 12, 30, 6, 1.1); W.put('bench', -7, -2.5, { ry: 30 }); W.put('lamp', 4, -8); W.scatter('flower', 16, 8.5, 14, { seed: 5 }); W.pond(-9, -9, 2.6); W.put('slide', 7, -7, { ry: -15 }); } },
   garden: { ground: 'grass', set: (W) => { W.ring('grass'); W.fence(-9, 9, -8); W.scatter('flower', 30, 3, 9, { seed: 2 }); W.scatter('rose', 8, 9, 13, { seed: 4 }); W.scatter('sunflower', 6, 9, 14, { seed: 6 }); W.put('garden_pot', -3, -6); W.put('garden_pot', 3, -6); W.put('tree', -8, -5, { s: 1.2 }); W.put('tree', 8, -5, { s: 1.1 }); W.put('bench', 0, -6.8); W.trees('tree', 10, 16, 30, 7); } },
-  restaurant: { ground: 'tile', kind: 'indoor', set: (W) => {
-    W.ring('grass', 10, 40, 56); W.trees('tree', 8, 18, 32, 12);
-    // ---- the kitchen house at the back: chef works inside, with the pass window on its RIGHT side ----
-    // frame only around the pass window (no glass) so the chef can be seen and talked to
-    W.setG.add(build([
-      ['box', [0.12, 2.2, 0.5], '#a16207', [2.1, 1.85, -7.6]],
-      ['box', [0.12, 2.2, 0.5], '#a16207', [4.3, 1.85, -7.6]],
-      ['box', [2.3, 0.12, 0.5], '#a16207', [3.2, 2.9, -7.6]],
-    ]).group);
-    W.setG.add(build([
-      ['box', [12.6, 0.2, 3.6], '#e7d8a8', [0, 0.1, -9.4]],                                // kitchen floor (open front)
-      ['box', [12.6, 4.8, 0.4], '#fef3c7', [0, 2.4, -11.2]],                               // back wall
-      ['box', [0.4, 4.8, 3.6], '#fef3c7', [-6.3, 2.4, -9.4]],                              // left wall
-      ['box', [0.4, 4.8, 3.6], '#fef3c7', [6.3, 2.4, -9.4]],                               // right wall
-      ['box', [6.4, 0.9, 1.1], '#d6d3d1', [-2.6, 0.45, -9.6]],                             // stove counter inside
-      ['cyl', [0.5, 0.5, 0.06, 16], '#374151', [-4.2, 0.93, -9.6]],                        // pan
-      ['cyl', [0.5, 0.5, 0.06, 16], '#374151', [-1.2, 0.93, -9.6]],                        // pan
-      ['box', [13.2, 0.5, 4.6], '#dc2626', [0, 5.05, -9.2]],                               // roof
-      ['box', [13.4, 0.32, 4.8], '#b91c1c', [0, 5.4, -9.2]],
-      ['box', [8.3, 4.8, 0.42], '#fde68a', [-2.15, 2.4, -7.6]],                            // front wall left of the pass window
-      ['box', [2.0, 4.8, 0.42], '#fde68a', [5.3, 2.4, -7.6]],                              // front wall right of the pass window
-      ['box', [2.2, 1.9, 0.42], '#fde68a', [3.2, 3.85, -7.6]],                             // wall above the pass window
-      ['box', [2.2, 0.6, 0.42], '#fde68a', [3.2, 0.3, -7.6]],                              // sill below the pass window
-      ['box', [1.0, 1.1, 0.12], '#7dd3fc', [-4.6, 2.9, -7.37]],                            // little side window
-      ['box', [0.9, 2.1, 0.12], '#7c2d12', [0, 1.05, -7.37]],                              // door (chef's way in)
-    ]).group);
-    // pass counter the chef serves on (not in front of the door!)
-    W.setG.add(build([
-      ['box', [2.3, 0.16, 0.62], '#a16207', [3.2, 1.02, -7.15]],                           // pass counter
-      ['box', [2.0, 0.5, 0.5], '#92400e', [3.2, 0.75, -7.15]],
-    ]).group);
-    W.sign('Kitchen', -3.2, 3.9, -7.34, { bg: '#dc2626', fg: '#fff', w: 3 });
-    W.sign('Order here', 3.2, 0.62, -6.82, { bg: '#fde68a', fg: '#7c2d12', w: 2.0 });
-    // ---- dining floor: tables with a chair on the left and right (guests sit on them) ----
-    GUEST_TABLES.forEach(([x, z], i) => {
-      W.put('table', x, z);
-      W.setG.add(build([chairParts(WOOD, x - 1.15, z, 90), chairParts(WOOD, x + 1.15, z, -90)]).group);
-      W.setG.add(build([['cyl', [0.12, 0.12, 0.3, 10], '#fff', [x, 0.95, z]], ...flowerParts('#f472b6', x, z, 1.25, 0.06)]).group);
-      // a big table number on a stand, readable from across the room
-      W.sign(String(i + 1), x, 1.52, z + 0.02, { bg: '#ffffff', fg: '#7c2d12', w: 1.05 });
-      W.setG.add(build([['cyl', [0.05, 0.06, 0.55, 10], '#a16207', [x, 1.2, z]]]).group);
-    });
-    for (const lx of [-4.6, 1.0]) { const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), new THREE.MeshBasicMaterial({ color: '#fff7cc' })); bulb.position.set(lx, 3.1, -9.2); W.setG.add(bulb); const pl = new THREE.PointLight('#fff1c9', 14, 9); pl.position.set(lx, 3.0, -9.0); W.setG.add(pl); }
-    W.put('pizza', -8.4, 2.6, { s: 0.7 }); W.put('cake', 8.4, 2.6, { s: 0.7 });
-    W.put('garden_pot', -7, -6.4); W.put('garden_pot', -5.4, -2.2);
-    W.put('lamp', -9.5, 0.5); W.put('lamp', 9.5, 0.5);
-    W.put('sofa', -9.2, 3.4, { ry: 90 });
-  } },
-  shop: { ground: 'tile', kind: 'indoor', set: (W) => {
-    W.ring('grass', 10, 40, 56);
-    // -----------------------------------------------------------------------------------
-    // Our shop. We (and the pet) stand BEHIND the counter in the middle of the room and look
-    // out at the door: customers walk in one by one, join the little line, hold up an item and
-    // ask its price. No roof, so the camera always sees inside.
-    // Layout (z grows toward the door at the front):
-    //   back wall  z = -8.2   | staff area  z -8 .. -4.4 | counter z = -4.2 | shop floor -4 .. 2.2 | door z = 2.4
-    // -----------------------------------------------------------------------------------
-    W.setG.add(build([
-      ['box', [15, 0.12, 15.6], '#f3e8d6', [0, 0.06, -4.6]],                              // shop floor
-      ['box', [15, 4.8, 0.45], '#fbcfe8', [0, 2.4, -11.4]],                               // back wall
-      ['box', [0.45, 4.8, 14], '#fbcfe8', [-7.5, 2.4, -4.4]],                             // left wall
-      ['box', [0.45, 4.8, 14], '#fbcfe8', [7.5, 2.4, -4.4]],                              // right wall
-      ['box', [15.4, 0.42, 0.42], '#be185d', [0, 4.6, -8.2]],                             // back trim
-      ['box', [0.42, 0.42, 14], '#be185d', [-7.5, 4.6, -4.4]],
-      ['box', [0.42, 0.42, 14], '#be185d', [7.5, 4.6, -4.4]],
-      // shop-front: two big windows with a real open doorway between them
-      ['box', [4.6, 3.3, 0.16], '#dbeafe', [-5.0, 1.65, 2.3]],
-      ['box', [4.6, 3.3, 0.16], '#dbeafe', [5.0, 1.65, 2.3]],
-      ['box', [0.26, 3.4, 0.3], '#f8fafc', [-2.6, 1.7, 2.3]],                             // door posts
-      ['box', [0.26, 3.4, 0.3], '#f8fafc', [2.6, 1.7, 2.3]],
-      ['box', [5.6, 0.3, 0.4], '#be185d', [0, 3.55, 2.3]],                                // door lintel
-      ['box', [7.8, 0.1, 2.6], '#e7d8c3', [0, 0.07, 3.5]],                                // step outside
-      ['box', [1.5, 0.1, 5.6], '#c084fc', [0, 0.09, -0.1]],                               // queue line painted on the floor
-      ['box', [7, 0.1, 1.0], '#a855f7', [0, 0.09, 1.9]],                                  // welcome mat
-    ]).group);
-    // ---- the counter: we stand behind it, customers in front ----
-    W.setG.add(build([
-      ['box', [7.4, 0.95, 0.95], '#c084fc', [0, 0.48, -4.2]],                             // counter body
-      ['box', [7.7, 0.12, 1.15], '#f5d0fe', [0, 1.0, -4.2]],                              // counter top
-      ['box', [7.4, 0.42, 0.1], '#9333ea', [0, 0.3, -3.7]],                               // front stripe
-      ['box', [7.5, 0.07, 0.18], '#fbbf24', [0, 0.66, -3.68]],                            // trim
-    ]).group);
-    // ---- desk equipment: monitor/laptop + cash drawer box facing child behind counter ----
-    const deskG = new THREE.Group();
-    const laptop = build([
-      ['box', [0.85, 0.05, 0.55], '#334155', [-0.65, 1.05, -4.45]],
-      ['box', [0.82, 0.54, 0.04], '#1e293b', [-0.65, 1.34, -4.18], [16, 0, 0]],
-      ['plane', [0.76, 0.46], { c: '#0284c7', emissive: '#0369a1', side: 2 }, [-0.65, 1.34, -4.2], [16, 180, 0]],
-      ['box', [0.72, 0.02, 0.28], '#475569', [-0.65, 1.08, -4.48]],
-      ['box', [0.24, 0.015, 0.16], '#1e293b', [-0.65, 1.08, -4.64]],
-    ]).group;
-    laptop.userData.pick = { kind: 'cashbox', name: 'Shop Laptop Monitor' };
-    laptop.traverse((m) => { m.userData.pick = laptop.userData.pick; });
-    deskG.add(laptop);
-
-    const cashbox = build([
-      ['box', [0.88, 0.32, 0.64], '#1e293b', [-1.75, 1.18, -4.3]],
-      ['box', [0.82, 0.2, 0.04], '#334155', [-1.75, 1.15, -4.63]],
-      ['box', [0.24, 0.04, 0.04], '#fbbf24', [-1.75, 1.15, -4.66]],
-      ['box', [0.38, 0.03, 0.22], '#0f172a', [-1.75, 1.35, -4.46], [16, 180, 0]],
-      ['sphere', [0.05], '#22c55e', [-1.45, 1.36, -4.5]],
-      ['box', [0.36, 0.02, 0.06], '#0284c7', [-1.75, 1.35, -4.2]],
-    ]).group;
-    cashbox.userData.pick = { kind: 'cashbox', name: 'Cash Register Box' };
-    cashbox.traverse((m) => { m.userData.pick = cashbox.userData.pick; });
-    deskG.add(cashbox);
-
-    deskG.add(build([
-      ['box', [0.38, 0.26, 0.08], '#0ea5e9', [-2.5, 1.18, -4.3], [20, 180, 0]],
-      ['sphere', [0.04], '#38bdf8', [-2.5, 1.32, -4.34]],
-    ]).group);
-    W.setG.add(deskG);
-    W.extraPickables = [laptop, cashbox];
-    W.put('computer', 5.0, -6.2, { s: 0.5 });
-    W.setG.add(build([['box', [1.2, 0.46, 1.0], '#a16207', [2.7, 0.23, -5.05]], ['box', [1.26, 0.07, 1.06], '#ca8a04', [2.7, 0.48, -5.05]]]).group);   // the pet's crate
-    W.put('clock', -7.2, -1.2, { s: 1, ry: 90 });
-    // ---- staff area behind us: shelves of things to sell, boxes, a lamp ----
-    // (the back of the staff area is kept clear, so the camera can pull back behind us without
-    //  ending up inside a shelf — the stock lives along the side walls and up on the back wall)
-    W.shelf(-7.1, -8.4, '#4ade80', 4, 90); W.shelf(7.1, -8.4, '#fb923c', 5, -90);
-    W.shelf(-7.1, -3.6, '#60a5fa', 1, 90); W.shelf(7.1, -3.6, '#f472b6', 2, -90);
-    W.shelf(-5.2, -11.1, '#facc15', 3); W.shelf(5.2, -11.1, '#a78bfa', 6);
-    W.put('table', -4.4, -8.9, { c: '#fef3c7', s: 0.9 }); W.put('teddy', -4.4, -8.9, { s: 0.6 });
-    W.put('gift', -6.4, -6.6, { s: 0.7 }); W.put('balloons', 6.3, -7.2, { s: 0.8 });
-    W.put('treasure', 4.6, -9.6, { s: 0.6 });
-    // ---- shop floor: displays the customers look at while they wait ----
-    W.put('table', -5.2, -1.3, { c: '#fef3c7', s: 0.9 }); W.put('teddy', -5.2, -1.3, { s: 0.7 });
-    W.put('table', 5.2, -1.3, { c: '#fef3c7', s: 0.9 }); W.put('ball', 5.2, -1.3, { s: 0.5 });
-    W.put('balloons', -6.6, 0.6, { s: 0.75 }); W.put('gift', 6.6, 0.4, { s: 0.7 });
-    W.put('garden_pot', -6.9, 1.6); W.put('garden_pot', 6.9, 1.6);
-    W.put('lamp', -6.6, -0.6); W.put('lamp', 6.6, -0.6);
-    W.sign('Rainbow Mall', 0, 4.1, -11.12, { bg: '#be185d', fg: '#fff', w: 3.6 });   // above the shelves, in our line of sight
-    W.sign('Thank you!', 0, 2.6, -11.14, { bg: '#fde68a', fg: '#7c2d12', w: 2.6 });  // back-wall poster behind the staff
-    W.sign('Open', 3.6, 2.9, 2.28, { bg: '#16a34a', fg: '#fff', w: 1.4, ry: 180 });
-    // warm bulbs over the counter so the inside is bright and shop-like
-    for (const lx of [-3.6, 0, 3.6]) {
-      const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), new THREE.MeshBasicMaterial({ color: '#fff7cc' }));
-      bulb.position.set(lx, 3.7, -4.6); W.setG.add(bulb);
-      const pl = new THREE.PointLight('#fff1c9', 12, 11); pl.position.set(lx, 3.4, -4.4); W.setG.add(pl);
+  restaurant: {
+    ground: 'tile', kind: 'indoor', set: (W) => {
+      W.ring('grass', 10, 40, 56); W.trees('tree', 8, 18, 32, 12);
+      // ---- the kitchen house at the back: chef works inside, with the pass window on its RIGHT side ----
+      // frame only around the pass window (no glass) so the chef can be seen and talked to
+      W.setG.add(build([
+        ['box', [0.12, 2.2, 0.5], '#a16207', [2.1, 1.85, -7.6]],
+        ['box', [0.12, 2.2, 0.5], '#a16207', [4.3, 1.85, -7.6]],
+        ['box', [2.3, 0.12, 0.5], '#a16207', [3.2, 2.9, -7.6]],
+      ]).group);
+      W.setG.add(build([
+        ['box', [12.6, 0.2, 3.6], '#e7d8a8', [0, 0.1, -9.4]],                                // kitchen floor (open front)
+        ['box', [12.6, 4.8, 0.4], '#fef3c7', [0, 2.4, -11.2]],                               // back wall
+        ['box', [0.4, 4.8, 3.6], '#fef3c7', [-6.3, 2.4, -9.4]],                              // left wall
+        ['box', [0.4, 4.8, 3.6], '#fef3c7', [6.3, 2.4, -9.4]],                               // right wall
+        ['box', [6.4, 0.9, 1.1], '#d6d3d1', [-2.6, 0.45, -9.6]],                             // stove counter inside
+        ['cyl', [0.5, 0.5, 0.06, 16], '#374151', [-4.2, 0.93, -9.6]],                        // pan
+        ['cyl', [0.5, 0.5, 0.06, 16], '#374151', [-1.2, 0.93, -9.6]],                        // pan
+        ['box', [13.2, 0.5, 4.6], '#dc2626', [0, 5.05, -9.2]],                               // roof
+        ['box', [13.4, 0.32, 4.8], '#b91c1c', [0, 5.4, -9.2]],
+        ['box', [8.3, 4.8, 0.42], '#fde68a', [-2.15, 2.4, -7.6]],                            // front wall left of the pass window
+        ['box', [2.0, 4.8, 0.42], '#fde68a', [5.3, 2.4, -7.6]],                              // front wall right of the pass window
+        ['box', [2.2, 1.9, 0.42], '#fde68a', [3.2, 3.85, -7.6]],                             // wall above the pass window
+        ['box', [2.2, 0.6, 0.42], '#fde68a', [3.2, 0.3, -7.6]],                              // sill below the pass window
+        ['box', [1.0, 1.1, 0.12], '#7dd3fc', [-4.6, 2.9, -7.37]],                            // little side window
+        ['box', [0.9, 2.1, 0.12], '#7c2d12', [0, 1.05, -7.37]],                              // door (chef's way in)
+      ]).group);
+      // pass counter the chef serves on (not in front of the door!)
+      W.setG.add(build([
+        ['box', [2.3, 0.16, 0.62], '#a16207', [3.2, 1.02, -7.15]],                           // pass counter
+        ['box', [2.0, 0.5, 0.5], '#92400e', [3.2, 0.75, -7.15]],
+      ]).group);
+      W.sign('Kitchen', -3.2, 3.9, -7.34, { bg: '#dc2626', fg: '#fff', w: 3 });
+      W.sign('Order here', 3.2, 0.62, -6.82, { bg: '#fde68a', fg: '#7c2d12', w: 2.0 });
+      // ---- dining floor: tables with a chair on the left and right (guests sit on them) ----
+      GUEST_TABLES.forEach(([x, z], i) => {
+        W.put('table', x, z);
+        W.setG.add(build([chairParts(WOOD, x - 1.15, z, 90), chairParts(WOOD, x + 1.15, z, -90)]).group);
+        W.setG.add(build([['cyl', [0.12, 0.12, 0.3, 10], '#fff', [x, 0.95, z]], ...flowerParts('#f472b6', x, z, 1.25, 0.06)]).group);
+        // a big table number on a stand, readable from across the room
+        W.sign(String(i + 1), x, 1.52, z + 0.02, { bg: '#ffffff', fg: '#7c2d12', w: 1.05 });
+        W.setG.add(build([['cyl', [0.05, 0.06, 0.55, 10], '#a16207', [x, 1.2, z]]]).group);
+      });
+      for (const lx of [-4.6, 1.0]) { const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), new THREE.MeshBasicMaterial({ color: '#fff7cc' })); bulb.position.set(lx, 3.1, -9.2); W.setG.add(bulb); const pl = new THREE.PointLight('#fff1c9', 14, 9); pl.position.set(lx, 3.0, -9.0); W.setG.add(pl); }
+      W.put('pizza', -8.4, 2.6, { s: 0.7 }); W.put('cake', 8.4, 2.6, { s: 0.7 });
+      W.put('garden_pot', -7, -6.4); W.put('garden_pot', -5.4, -2.2);
+      W.put('lamp', -9.5, 0.5); W.put('lamp', 9.5, 0.5);
+      W.put('sofa', -9.2, 3.4, { ry: 90 });
     }
-    const doorLight = new THREE.PointLight('#fff7d6', 8, 12); doorLight.position.set(0, 2.6, 1.6); W.setG.add(doorLight);
-  } },
-  hospital: { ground: 'clinic', kind: 'indoor', set: (W) => {
-    W.ring('grass', 10, 40, 56); W.trees('tree', 6, 20, 32, 13);
-    W.setG.add(build([['box', [14, 4, 0.5], '#f8fafc', [0, 2, -9]], ['box', [0.5, 4, 10], '#f8fafc', [-7.5, 2, -4]], ['box', [0.5, 4, 10], '#f8fafc', [7.5, 2, -4]], ['box', [1.6, 0.4, 0.12], '#ef4444', [0, 3.2, -8.7]], ['box', [0.4, 1.6, 0.12], '#ef4444', [0, 3.2, -8.7]], ['box', [3, 2, 0.1], '#bfe9ff', [-4, 2, -8.7]], ['box', [3, 2, 0.1], '#bfe9ff', [4, 2, -8.7]]]).group);
-    W.put('bed', -0.5, -6, { s: 1.1, ry: 90 }); W.put('computer', 4.5, -7.5, { s: 0.9 }); W.setG.add(build([['box', [1.4, 1.2, 0.6], '#e5e7eb', [-5, 0.6, -7.5]], ['box', [1.2, 0.3, 0.5], '#60a5fa', [-5, 1.35, -7.5]]]).group); W.put('medicine', -5, -7.5, { s: 0.6 }).position.y = 1.5; W.put('garden_pot', 6.5, -2, {}); W.put('garden_pot', -6.5, -2, {}); W.setG.add(build([chairParts('#60a5fa', 5.5, -4, 180), chairParts('#60a5fa', 6.3, -4, 180)]).group); W.put('lamp', -6.5, 1.5); W.put('lamp', 6.5, 1.5);
-  } },
-  stage: { ground: 'wood', kind: 'indoor', sky: 'stage', light: 'stage', set: (W) => {
-    W.setG.add(build([['box', [18, 7, 0.4], { c: '#1e1b4b', map: repeatTex(groundTexture('stars'), 4, 2) }, [0, 3.5, -9]], ['box', [2.4, 7.5, 1.2], '#b91c1c', [-8.5, 3.75, -5]], ['box', [2.4, 7.5, 1.2], '#b91c1c', [8.5, 3.75, -5]], ['box', [20, 1.2, 1.2], '#b91c1c', [0, 7.2, -5]], ['box', [20, 0.4, 20], '#fbbf24', [0, 7.9, 0]], ['box', [20, 0.35, 0.5], '#fbbf24', [0, 0.15, 3.6]], ...[-7, -5, -3, -1, 1, 3, 5, 7].map((x) => ['sphere', [0.14], { c: '#fff7c2', e: '#fde68a', ei: 1.2 }, [x, 0.4, 3.6]])]).group);
-    W.put('microphone', 0, 1.2, { s: 1 }); W.put('piano', -5, -4, { s: 0.9, ry: 30 }); W.put('drum', 5, -4.5, { s: 0.9 }); W.put('balloons', -7, -2, { s: 0.8 }); W.put('balloons', 7, -2, { s: 0.8, c: '#a855f7' });
-    // audience arc
-    const r = rnd(44), shirts = ['#ef4444', '#3b82f6', '#22c55e', '#facc15', '#f472b6', '#a855f7', '#fb923c'];
-    for (let row = 0; row < 2; row++) for (let i = 0; i < 9; i++) { const a = (-70 + i * 17.5) * Math.PI / 180, d = 7.6 + row * 1.9; const { group, named } = makePerson(['friend', 'mom', 'dad', 'grandma', 'teacher', 'person'][Math.floor(r() * 6)], { color: shirts[Math.floor(r() * shirts.length)], seed: i + row * 9 }); group.position.set(Math.sin(a) * d, -0.15, Math.cos(a) * d); group.rotation.y = Math.PI + a; group.scale.setScalar(0.85 + r() * 0.1); W.setG.add(group); W.audience.push({ g: group, named, phase: r() * 6, baseY: -0.15 }); }
-    // spotlights
-    for (const [x, c] of [[-5, '#ff9ecf'], [5, '#9ed0ff'], [0, '#fff3b0']]) { const light = new THREE.SpotLight(c, 0, 30, 0.42, 0.5, 1); light.position.set(x, 7.5, 2); light.target.position.set(0, 0, 0); light.castShadow = false; W.scene.add(light, light.target); const cone = new THREE.Mesh(new THREE.ConeGeometry(2.4, 8, 24, 1, true), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending })); cone.position.set(x, 3.6, 1); W.scene.add(cone); W.spots.push({ light, cone, base: 70, on: true, phase: x }); }
-  } },
-  create: { ground: 'check', sky: 'dream', set: (W) => {
-    W.ring('dream', 12, 36, 54); const r = rnd(19);
-    for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + 0.4, d = 15 + r() * 8, y = 3.5 + r() * 4; const g = build([['cyl', [2.6, 1.6, 1.2, 10], '#a16207', [0, -0.6, 0]], ['cyl', [2.7, 2.7, 0.3, 10], '#86efac', [0, 0.1, 0]], ...(r() < 0.5 ? treeParts('#4ade80', 0.8) : pineParts('#22c55e', 0.7)).map((p) => { const q = [...p]; q[3] = [p[3][0], p[3][1] + 0.25, p[3][2]]; return q; })]).group; g.position.set(Math.cos(a) * d, y, Math.sin(a) * d); W.setG.add(g); W.islands.push({ g, y, phase: r() * 6 }); }
-    W.put('rainbow', 0, -24, { s: 2.2 }); W.scatter('flower', 20, 6, 13, { seed: 9 }); W.put('painting', -6, -6, { ry: 20 }); W.put('blocks', 6, -6, { s: 1.4 }); W.put('star', -4, -8, { s: 1.2 }); W.put('star', 5, -9, { s: 0.9 });
-  } },
+  },
+  shop: {
+    ground: 'tile', kind: 'indoor', set: (W) => {
+      W.ring('grass', 10, 40, 56);
+      // -----------------------------------------------------------------------------------
+      // Our shop. We (and the pet) stand BEHIND the counter in the middle of the room and look
+      // out at the door: customers walk in one by one, join the little line, hold up an item and
+      // ask its price. No roof, so the camera always sees inside.
+      // Layout (z grows toward the door at the front):
+      //   back wall  z = -8.2   | staff area  z -8 .. -4.4 | counter z = -4.2 | shop floor -4 .. 2.2 | door z = 2.4
+      // -----------------------------------------------------------------------------------
+      W.setG.add(build([
+        ['box', [15, 0.12, 15.6], '#f3e8d6', [0, 0.06, -4.6]],                              // shop floor
+        ['box', [15, 4.8, 0.45], '#fbcfe8', [0, 2.4, -11.4]],                               // back wall
+        ['box', [0.45, 4.8, 14], '#fbcfe8', [-7.5, 2.4, -4.4]],                             // left wall
+        ['box', [0.45, 4.8, 14], '#fbcfe8', [7.5, 2.4, -4.4]],                              // right wall
+        ['box', [15.4, 0.42, 0.42], '#be185d', [0, 4.6, -8.2]],                             // back trim
+        ['box', [0.42, 0.42, 14], '#be185d', [-7.5, 4.6, -4.4]],
+        ['box', [0.42, 0.42, 14], '#be185d', [7.5, 4.6, -4.4]],
+        // shop-front: two big windows with a real open doorway between them
+        ['box', [4.6, 3.3, 0.16], '#dbeafe', [-5.0, 1.65, 2.3]],
+        ['box', [4.6, 3.3, 0.16], '#dbeafe', [5.0, 1.65, 2.3]],
+        ['box', [0.26, 3.4, 0.3], '#f8fafc', [-2.6, 1.7, 2.3]],                             // door posts
+        ['box', [0.26, 3.4, 0.3], '#f8fafc', [2.6, 1.7, 2.3]],
+        ['box', [5.6, 0.3, 0.4], '#be185d', [0, 3.55, 2.3]],                                // door lintel
+        ['box', [7.8, 0.1, 2.6], '#e7d8c3', [0, 0.07, 3.5]],                                // step outside
+        ['box', [1.5, 0.1, 5.6], '#c084fc', [0, 0.09, -0.1]],                               // queue line painted on the floor
+        ['box', [7, 0.1, 1.0], '#a855f7', [0, 0.09, 1.9]],                                  // welcome mat
+      ]).group);
+      // ---- the counter: we stand behind it, customers in front ----
+      W.setG.add(build([
+        ['box', [7.4, 0.95, 0.95], '#c084fc', [0, 0.48, -4.2]],                             // counter body
+        ['box', [7.7, 0.12, 1.15], '#f5d0fe', [0, 1.0, -4.2]],                              // counter top
+        ['box', [7.4, 0.42, 0.1], '#9333ea', [0, 0.3, -3.7]],                               // front stripe
+        ['box', [7.5, 0.07, 0.18], '#fbbf24', [0, 0.66, -3.68]],                            // trim
+      ]).group);
+      // ---- desk equipment: monitor/laptop + cash drawer box facing child behind counter ----
+      const deskG = new THREE.Group();
+      const laptop = build([
+        ['box', [0.85, 0.05, 0.55], '#334155', [-0.65, 1.05, -4.45]],
+        ['box', [0.82, 0.54, 0.04], '#1e293b', [-0.65, 1.34, -4.16], [-16, 0, 0]],
+        ['plane', [0.76, 0.46], { c: '#0284c7', emissive: '#0369a1', side: 2 }, [-0.65, 1.34, -4.20], [-16, 0, 0]],
+        ['box', [0.72, 0.02, 0.26], '#1e293b', [-0.65, 1.08, -4.38]],
+        ['box', [0.26, 0.015, 0.16], '#475569', [-0.65, 1.08, -4.60]],
+      ]).group;
+      laptop.userData.pick = { kind: 'cashbox', name: 'Shop Laptop Monitor' };
+      laptop.traverse((m) => { m.userData.pick = laptop.userData.pick; });
+      deskG.add(laptop);
+
+      const cashbox = build([
+        ['box', [0.90, 0.30, 0.65], '#1e293b', [-1.75, 1.16, -4.35]],
+        // Cash drawer front facing player at -Z
+        ['box', [0.84, 0.18, 0.04], '#334155', [-1.75, 1.12, -4.68]],
+        ['box', [0.26, 0.04, 0.05], '#fbbf24', [-1.75, 1.12, -4.71]], // gold drawer handle
+        // Register display & keypad angled toward player
+        ['box', [0.42, 0.04, 0.24], '#0f172a', [-1.75, 1.33, -4.35], [-20, 0, 0]],
+        ['plane', [0.36, 0.12], { c: '#22c55e', emissive: '#16a34a', side: 2 }, [-1.75, 1.35, -4.38], [-20, 0, 0]],
+        ['sphere', [0.05], '#22c55e', [-1.45, 1.34, -4.42]], // green action button
+        // Play money visible on drawer
+        ['box', [0.24, 0.02, 0.12], '#22c55e', [-1.90, 1.22, -4.55]],
+        ['box', [0.24, 0.02, 0.12], '#38bdf8', [-1.62, 1.22, -4.55]],
+        ['cyl', [0.04, 0.04, 0.02, 12], '#fbbf24', [-1.76, 1.23, -4.45]],
+      ]).group;
+      cashbox.userData.pick = { kind: 'cashbox', name: 'Cash Register Box' };
+      cashbox.traverse((m) => { m.userData.pick = cashbox.userData.pick; });
+      deskG.add(cashbox);
+
+      deskG.add(build([
+        ['box', [0.38, 0.26, 0.08], '#0ea5e9', [-2.5, 1.18, -4.3], [20, 180, 0]],
+        ['sphere', [0.04], '#38bdf8', [-2.5, 1.32, -4.34]],
+      ]).group);
+      W.setG.add(deskG);
+      W.extraPickables = [laptop, cashbox];
+      W.put('computer', 5.0, -6.2, { s: 0.5 });
+      W.setG.add(build([['box', [1.2, 0.46, 1.0], '#a16207', [2.7, 0.23, -5.05]], ['box', [1.26, 0.07, 1.06], '#ca8a04', [2.7, 0.48, -5.05]]]).group);   // the pet's crate
+      W.put('clock', -7.2, -1.2, { s: 1, ry: 90 });
+      // ---- staff area behind us: shelves of things to sell, boxes, a lamp ----
+      // (the back of the staff area is kept clear, so the camera can pull back behind us without
+      //  ending up inside a shelf — the stock lives along the side walls and up on the back wall)
+      W.shelf(-7.1, -8.4, '#4ade80', 4, 90); W.shelf(7.1, -8.4, '#fb923c', 5, -90);
+      W.shelf(-7.1, -3.6, '#60a5fa', 1, 90); W.shelf(7.1, -3.6, '#f472b6', 2, -90);
+      W.shelf(-5.2, -11.1, '#facc15', 3); W.shelf(5.2, -11.1, '#a78bfa', 6);
+      W.put('table', -4.4, -8.9, { c: '#fef3c7', s: 0.9 }); W.put('teddy', -4.4, -8.9, { s: 0.6 });
+      W.put('gift', -6.4, -6.6, { s: 0.7 }); W.put('balloons', 6.3, -7.2, { s: 0.8 });
+      W.put('treasure', 4.6, -9.6, { s: 0.6 });
+      // ---- shop floor: displays the customers look at while they wait ----
+      W.put('table', -5.2, -1.3, { c: '#fef3c7', s: 0.9 }); W.put('teddy', -5.2, -1.3, { s: 0.7 });
+      W.put('table', 5.2, -1.3, { c: '#fef3c7', s: 0.9 }); W.put('ball', 5.2, -1.3, { s: 0.5 });
+      W.put('balloons', -6.6, 0.6, { s: 0.75 }); W.put('gift', 6.6, 0.4, { s: 0.7 });
+      W.put('garden_pot', -6.9, 1.6); W.put('garden_pot', 6.9, 1.6);
+      W.put('lamp', -6.6, -0.6); W.put('lamp', 6.6, -0.6);
+      W.sign('Rainbow Mall', 0, 4.1, -11.12, { bg: '#be185d', fg: '#fff', w: 3.6 });   // above the shelves, in our line of sight
+      W.sign('Thank you!', 0, 2.6, -11.14, { bg: '#fde68a', fg: '#7c2d12', w: 2.6 });  // back-wall poster behind the staff
+      W.sign('Open', 3.6, 2.9, 2.28, { bg: '#16a34a', fg: '#fff', w: 1.4, ry: 180 });
+      // warm bulbs over the counter so the inside is bright and shop-like
+      for (const lx of [-3.6, 0, 3.6]) {
+        const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), new THREE.MeshBasicMaterial({ color: '#fff7cc' }));
+        bulb.position.set(lx, 3.7, -4.6); W.setG.add(bulb);
+        const pl = new THREE.PointLight('#fff1c9', 12, 11); pl.position.set(lx, 3.4, -4.4); W.setG.add(pl);
+      }
+      const doorLight = new THREE.PointLight('#fff7d6', 8, 12); doorLight.position.set(0, 2.6, 1.6); W.setG.add(doorLight);
+    }
+  },
+  hospital: {
+    ground: 'clinic', kind: 'indoor', set: (W) => {
+      W.ring('grass', 10, 40, 56); W.trees('tree', 6, 20, 32, 13);
+      W.setG.add(build([['box', [14, 4, 0.5], '#f8fafc', [0, 2, -9]], ['box', [0.5, 4, 10], '#f8fafc', [-7.5, 2, -4]], ['box', [0.5, 4, 10], '#f8fafc', [7.5, 2, -4]], ['box', [1.6, 0.4, 0.12], '#ef4444', [0, 3.2, -8.7]], ['box', [0.4, 1.6, 0.12], '#ef4444', [0, 3.2, -8.7]], ['box', [3, 2, 0.1], '#bfe9ff', [-4, 2, -8.7]], ['box', [3, 2, 0.1], '#bfe9ff', [4, 2, -8.7]]]).group);
+      W.put('bed', -0.5, -6, { s: 1.1, ry: 90 }); W.put('computer', 4.5, -7.5, { s: 0.9 }); W.setG.add(build([['box', [1.4, 1.2, 0.6], '#e5e7eb', [-5, 0.6, -7.5]], ['box', [1.2, 0.3, 0.5], '#60a5fa', [-5, 1.35, -7.5]]]).group); W.put('medicine', -5, -7.5, { s: 0.6 }).position.y = 1.5; W.put('garden_pot', 6.5, -2, {}); W.put('garden_pot', -6.5, -2, {}); W.setG.add(build([chairParts('#60a5fa', 5.5, -4, 180), chairParts('#60a5fa', 6.3, -4, 180)]).group); W.put('lamp', -6.5, 1.5); W.put('lamp', 6.5, 1.5);
+    }
+  },
+  stage: {
+    ground: 'wood', kind: 'indoor', sky: 'stage', light: 'stage', set: (W) => {
+      W.setG.add(build([['box', [18, 7, 0.4], { c: '#1e1b4b', map: repeatTex(groundTexture('stars'), 4, 2) }, [0, 3.5, -9]], ['box', [2.4, 7.5, 1.2], '#b91c1c', [-8.5, 3.75, -5]], ['box', [2.4, 7.5, 1.2], '#b91c1c', [8.5, 3.75, -5]], ['box', [20, 1.2, 1.2], '#b91c1c', [0, 7.2, -5]], ['box', [20, 0.4, 20], '#fbbf24', [0, 7.9, 0]], ['box', [20, 0.35, 0.5], '#fbbf24', [0, 0.15, 3.6]], ...[-7, -5, -3, -1, 1, 3, 5, 7].map((x) => ['sphere', [0.14], { c: '#fff7c2', e: '#fde68a', ei: 1.2 }, [x, 0.4, 3.6]])]).group);
+      W.put('microphone', 0, 1.2, { s: 1 }); W.put('piano', -5, -4, { s: 0.9, ry: 30 }); W.put('drum', 5, -4.5, { s: 0.9 }); W.put('balloons', -7, -2, { s: 0.8 }); W.put('balloons', 7, -2, { s: 0.8, c: '#a855f7' });
+      // audience arc
+      const r = rnd(44), shirts = ['#ef4444', '#3b82f6', '#22c55e', '#facc15', '#f472b6', '#a855f7', '#fb923c'];
+      for (let row = 0; row < 2; row++) for (let i = 0; i < 9; i++) { const a = (-70 + i * 17.5) * Math.PI / 180, d = 7.6 + row * 1.9; const { group, named } = makePerson(['friend', 'mom', 'dad', 'grandma', 'teacher', 'person'][Math.floor(r() * 6)], { color: shirts[Math.floor(r() * shirts.length)], seed: i + row * 9 }); group.position.set(Math.sin(a) * d, -0.15, Math.cos(a) * d); group.rotation.y = Math.PI + a; group.scale.setScalar(0.85 + r() * 0.1); W.setG.add(group); W.audience.push({ g: group, named, phase: r() * 6, baseY: -0.15 }); }
+      // spotlights
+      for (const [x, c] of [[-5, '#ff9ecf'], [5, '#9ed0ff'], [0, '#fff3b0']]) { const light = new THREE.SpotLight(c, 0, 30, 0.42, 0.5, 1); light.position.set(x, 7.5, 2); light.target.position.set(0, 0, 0); light.castShadow = false; W.scene.add(light, light.target); const cone = new THREE.Mesh(new THREE.ConeGeometry(2.4, 8, 24, 1, true), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending })); cone.position.set(x, 3.6, 1); W.scene.add(cone); W.spots.push({ light, cone, base: 70, on: true, phase: x }); }
+    }
+  },
+  create: {
+    ground: 'check', sky: 'dream', set: (W) => {
+      W.ring('dream', 12, 36, 54); const r = rnd(19);
+      for (let i = 0; i < 7; i++) { const a = (i / 7) * Math.PI * 2 + 0.4, d = 15 + r() * 8, y = 3.5 + r() * 4; const g = build([['cyl', [2.6, 1.6, 1.2, 10], '#a16207', [0, -0.6, 0]], ['cyl', [2.7, 2.7, 0.3, 10], '#86efac', [0, 0.1, 0]], ...(r() < 0.5 ? treeParts('#4ade80', 0.8) : pineParts('#22c55e', 0.7)).map((p) => { const q = [...p]; q[3] = [p[3][0], p[3][1] + 0.25, p[3][2]]; return q; })]).group; g.position.set(Math.cos(a) * d, y, Math.sin(a) * d); W.setG.add(g); W.islands.push({ g, y, phase: r() * 6 }); }
+      W.put('rainbow', 0, -24, { s: 2.2 }); W.scatter('flower', 20, 6, 13, { seed: 9 }); W.put('painting', -6, -6, { ry: 20 }); W.put('blocks', 6, -6, { s: 1.4 }); W.put('star', -4, -8, { s: 1.2 }); W.put('star', 5, -9, { s: 0.9 });
+    }
+  },
   beach: { ground: 'sand', set: (W) => { W.sea(-11); W.ring('sand', 8, 36, 50, 8); W.put('palm', -7, -6, { s: 1.1 }); W.put('palm', 7.5, -7, { s: 1.2, ry: 60 }); W.put('palm', -10, -1, { s: 0.9, ry: 120 }); W.put('umbrella', 5, -2.5); W.put('sandcastle', -4, -3.5, { s: 0.9 }); W.put('ball', 2.5, -4.5, { c: '#f472b6' }); W.put('shell', -1.5, 1.5, { s: 0.7 }); W.put('shell', 6.5, 1, { s: 0.6, c: '#fde68a' }); W.put('boat', 6, -12, { s: 1.2, ry: -20 }); W.setG.add(build([['plane', [2, 1.4], { c: '#f472b6', side: 2 }, [4.8, 0.02, -1.2], [-90, 0, 25]]]).group); const { group } = makeAnimal('crab', { scale: 0.7 }); group.position.set(-6.5, 0, 0.5); W.setG.add(group); } },
   space: { ground: 'moon', sky: 'space', light: 'space', set: (W) => { W.ring('moon', 10, 30, 50, 2); W.put('rocket', -5.5, -6, { s: 1.4 }); W.put('flag', 3, -4, { c: '#ef4444' }); W.put('satellite', 6, -2, { s: 0.8 }); const p = W.put('planet', -16, 12, { s: 3, c: '#fb923c' }); p.traverse((m) => { m.castShadow = false; }); const e = W.put('earth', 18, 14, { s: 2.6 }); e.traverse((m) => { m.castShadow = false; }); for (const [x, z, s] of [[4, 3, 1.4], [-3, 4, 1], [-8, -2, 2], [8, -7, 1.6]]) { const c = new THREE.Mesh(geo('torus', [s, 0.25, 8, 24]), mat('#7a7a88')); c.rotation.x = -Math.PI / 2; c.position.set(x, 0.05, z); c.receiveShadow = true; W.setG.add(c); } W.put('robot', 7, -5, { s: 0.9, ry: -30 }); } },
   school: { ground: 'grass', set: (W) => { W.ring('grass'); W.put('school', 0, -9, { s: 1.4 }); W.put('slide', -7, -5, { ry: 20 }); W.put('swing', 7, -5.5); W.put('bench', -4, -4.5, { ry: 10 }); W.put('bench', 4, -4.5, { ry: -10 }); W.put('tree', -9.5, -8, { s: 1.2 }); W.put('tree', 9.5, -8); W.put('book', 2, -3, { s: 0.9 }); W.put('soccer', -2, -2.5, { s: 0.8 }); W.trees('tree', 10, 16, 30, 3); } },

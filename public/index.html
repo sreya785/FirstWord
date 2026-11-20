@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <title>FirstWord AI — A little friend who listens</title>
+  <meta name="description" content="FirstWord AI: a voice-powered 3D pet friend that helps children practise speaking through play. The child speaks, the pet listens, the world responds." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
+  <link rel="preload" href="/fonts/Fredoka-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/fonts/fonts.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/game.css" />
+  <meta name="theme-color" content="#0f0c29" />
+  <script type="importmap">{ "imports": { "three": "/vendor/three.module.js" } }</script>
+</head>
+<body>
+  <canvas id="gl" aria-label="FirstWord AI game world"></canvas>
+  <div id="ui" aria-live="polite"></div>
+  <noscript><p style="color:#fff;padding:2rem;font-family:sans-serif">FirstWord AI needs JavaScript and WebGL to run.</p></noscript>
+  <script type="module" src="/js/main.js?v=2.1.0"></script>
+</body>
+</html>
